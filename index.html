@@ -12,261 +12,308 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F2EDE4;
-    --paper-dark:#E8E0D2;
-    --ink:#2B2620;
-    --muted:#8A8170;
-    --accent:#C1432F;
-    --accent-dim:#E2A89D;
-    --good:#5B7553;
-    --good-dim:#C9D6C3;
-    --shadow: 0 2px 0 rgba(43,38,32,0.05), 0 8px 24px -8px rgba(43,38,32,0.18);
+    --navy:#0A1726;
+    --navy-deep:#081320;
+    --panel:#0F2338;
+    --panel-2:#16314C;
+    --raised:#1E3E5E;
+    --gold:#E7B85C;
+    --gold-2:#F0CE86;
+    --gold-soft:rgba(231,184,92,.13);
+    --gold-line:rgba(231,184,92,.40);
+    --ink:#EAF1F8;
+    --muted:#90A4BA;
+    --line:rgba(255,255,255,.10);
+    --good:#54C08A;
+    --good-soft:rgba(84,192,138,.14);
+    --warn:#F08A5D;
+    --warn-soft:rgba(240,138,93,.14);
+    --blue:#5AA9E6;
+    --shadow:0 14px 34px -16px rgba(0,0,0,.7);
+    --radius:14px;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html,body{margin:0; padding:0;}
   body{
     background:
-      repeating-linear-gradient(0deg, transparent 0 38px, rgba(138,129,112,0.06) 38px 39px),
-      var(--paper);
+      radial-gradient(1100px 520px at 50% -8%, rgba(231,184,92,.10), transparent 62%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    background-attachment:fixed;
     color:var(--ink);
     font-family:'Inter',sans-serif;
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
-    padding-bottom:60px;
+    padding-bottom:72px;
   }
   .mono{font-family:'JetBrains Mono',monospace;}
 
+  /* ---------- HEADER ---------- */
   header{
     position:sticky; top:0; z-index:20;
-    background:var(--paper);
-    border-bottom:2px solid var(--ink);
-    padding:18px 20px 14px;
+    background:rgba(8,19,32,.86);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--gold-line);
+    padding:16px 20px 14px;
+  }
+  .brandRow{display:flex; align-items:center; gap:14px;}
+  .roundel{
+    flex-shrink:0; width:50px; height:50px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:17px; letter-spacing:.02em;
+    color:var(--gold); background:var(--gold-soft); border:2px solid var(--gold);
+    box-shadow:0 0 16px rgba(231,184,92,.25), inset 0 0 12px rgba(231,184,92,.12);
   }
   header .eyebrow{
     font-family:'JetBrains Mono',monospace;
-    font-size:11px; letter-spacing:.12em; text-transform:uppercase;
-    color:var(--muted);
+    font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold);
   }
-  header h1{
-    margin:2px 0 0; font-size:22px; line-height:1.2; font-weight:700;
-  }
+  header h1{margin:3px 0 0; font-size:20px; line-height:1.2; font-weight:700; color:var(--ink);}
 
-  .stats{
-    display:flex; gap:10px; margin:14px 20px 0; flex-wrap:wrap;
-  }
+  /* ---------- STATS (instrumentos) ---------- */
+  .stats{display:flex; gap:10px; margin:16px 20px 0; flex-wrap:wrap;}
   .stat{
-    flex:1; min-width:90px;
-    background:#fff; border:1.5px solid var(--ink);
-    border-radius:10px; padding:10px 12px;
+    flex:1; min-width:96px; position:relative; overflow:hidden;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line); border-radius:12px; padding:11px 13px;
     box-shadow:var(--shadow);
   }
-  .stat .label{font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-family:'JetBrains Mono',monospace;}
-  .stat .value{font-size:24px; font-weight:700; margin-top:2px; display:flex; align-items:baseline; gap:4px;}
-  .stat.streak .value{color:var(--accent);}
+  .stat::before{content:""; position:absolute; top:0; left:0; right:0; height:2px; background:var(--gold); opacity:.5;}
+  .stat .label{font-size:9.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .stat .value{font-size:25px; font-weight:700; margin-top:3px; display:flex; align-items:baseline; gap:4px; color:var(--ink); font-family:'JetBrains Mono',monospace;}
+  .stat.streak .value{color:var(--gold);}
   .stat.streak .value.off{color:var(--muted);}
   .stat.points .value{color:var(--good);}
 
+  /* ---------- ALERTA ---------- */
   #alertBanner{
     margin:14px 20px 0; padding:12px 14px;
-    background:#fff; border:1.5px dashed var(--accent); border-radius:10px;
-    font-size:13.5px; line-height:1.45; display:none;
+    background:var(--gold-soft); border:1px solid var(--gold-line); border-radius:10px;
+    font-size:13.5px; line-height:1.45; display:none; color:var(--ink);
   }
-  #alertBanner b{color:var(--accent);}
+  #alertBanner b{color:var(--gold);}
 
-  .progressWrap{margin:16px 20px 0;}
-  .progressBar{height:8px; background:var(--paper-dark); border:1px solid var(--ink); border-radius:6px; overflow:hidden;}
-  .progressFill{height:100%; background:var(--good); width:0%; transition:width .4s ease;}
-  .progressLabel{font-size:11px; color:var(--muted); margin-top:5px; font-family:'JetBrains Mono',monospace;}
+  /* ---------- RUTA DE VUELO (progreso) ---------- */
+  .flightWrap{margin:20px 20px 4px;}
+  .flightHead{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted);
+  }
+  .flightTrack{
+    position:relative; height:2px; margin:22px 12px 14px;
+    background:repeating-linear-gradient(90deg,var(--line) 0 7px, transparent 7px 15px);
+  }
+  .flightTrail{
+    position:absolute; top:0; left:0; height:2px; width:0%;
+    background:linear-gradient(90deg,var(--gold-line),var(--gold));
+    box-shadow:0 0 10px rgba(231,184,92,.7);
+    transition:width .7s cubic-bezier(.34,1.2,.5,1);
+  }
+  .flightPlane{
+    position:absolute; top:50%; left:0%; transform:translate(-50%,-50%);
+    font-size:19px; line-height:1;
+    transition:left .7s cubic-bezier(.34,1.2,.5,1);
+    filter:drop-shadow(0 0 7px rgba(231,184,92,.75));
+  }
+  .flightDot{position:absolute; top:50%; font-size:14px;}
+  .flightDot.start{left:-3px; width:9px; height:9px; border-radius:50%; background:var(--panel); border:2px solid var(--gold); transform:translateY(-50%);}
+  .flightDot.end{right:-12px; transform:translateY(-50%);}
+  .progressLabel{font-size:11px; color:var(--muted); font-family:'JetBrains Mono',monospace; text-align:right;}
 
-  main{padding:18px 20px 40px; max-width:600px; margin:0 auto;}
+  main{padding:8px 20px 40px; max-width:620px; margin:0 auto;}
 
+  /* ---------- TARJETAS (boarding pass) ---------- */
   .ticket{
-    position:relative;
-    background:#fff;
-    border:1.5px solid var(--ink);
-    border-radius:2px;
-    margin-bottom:22px;
-    box-shadow:var(--shadow);
-    overflow:hidden;
+    position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line); border-radius:var(--radius);
+    margin-bottom:16px; box-shadow:var(--shadow); overflow:hidden;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
   }
-  .ticket::before, .ticket::after{
-    content:""; position:absolute; left:0; right:0; height:10px;
-    background-image: radial-gradient(circle at 8px 5px, transparent 5px, #fff 5.5px);
-    background-size: 16px 10px; background-repeat:repeat-x;
-  }
-  .ticket::before{ top:-5px; }
-  .ticket::after{ bottom:-5px; transform:rotate(180deg); }
-
-  .ticket.locked{opacity:.55;}
-  .ticket.today{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-dim), var(--shadow);}
-  .ticket.done .ticketHead{background:var(--good-dim);}
+  .ticket::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--muted); opacity:.65;}
+  .ticket.blk-fund::before{background:var(--blue);}
+  .ticket.blk-tools::before{background:var(--gold);}
+  .ticket.blk-phase::before{background:var(--good);}
+  .ticket:hover{transform:translateY(-2px);}
+  .ticket.locked{opacity:.5;}
+  .ticket.locked:hover{transform:none;}
+  .ticket.today{border-color:var(--gold-line); box-shadow:0 0 0 1px var(--gold-line), 0 0 26px -6px rgba(231,184,92,.45), var(--shadow);}
+  .ticket.done .ticketHead{background:var(--good-soft);}
 
   .ticketHead{
     display:flex; align-items:center; justify-content:space-between;
-    padding:14px 16px 10px; border-bottom:1px dashed var(--muted);
-    cursor:pointer; gap:10px;
+    padding:14px 16px 13px 18px; cursor:pointer; gap:10px; transition:background .18s ease;
   }
-  .ticketHead .dayMeta{display:flex; flex-direction:column; gap:2px;}
-  .ticketHead .dayNum{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase;}
-  .ticketHead .dayTitle{font-weight:700; font-size:16px;}
-  .ticketHead .dayDate{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);}
+  .ticketHead:hover{background:rgba(255,255,255,.03);}
+  .ticketHead .dayMeta{display:flex; flex-direction:column; gap:4px; min-width:0;}
+  .topLine{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .ticketHead .dayNum{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase;}
+  .ticketHead .dayTitle{font-weight:700; font-size:15.5px; color:var(--ink);}
+  .ticketHead .dayDate{font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted);}
+  .blockTag{
+    font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.08em; text-transform:uppercase;
+    padding:2px 7px; border-radius:20px; border:1px solid currentColor; white-space:nowrap;
+  }
+  .blockTag.fund{color:var(--blue);}
+  .blockTag.tools{color:var(--gold);}
+  .blockTag.phase{color:var(--good);}
   .badge{
-    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase;
-    padding:4px 8px; border-radius:20px; border:1px solid currentColor; white-space:nowrap;
+    font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+    padding:4px 9px; border-radius:20px; border:1px solid currentColor; white-space:nowrap; flex-shrink:0;
   }
-  .badge.hoy{color:var(--accent);}
-  .badge.cumplido{color:var(--good);}
+  .badge.hoy{color:var(--gold); background:var(--gold-soft);}
+  .badge.cumplido{color:var(--good); background:var(--good-soft);}
   .badge.bloqueado{color:var(--muted);}
-  .badge.pendiente{color:var(--muted);}
+  .badge.pendiente{color:var(--warn);}
 
-  .ticketBody{padding:0 16px 16px; display:none;}
-  .ticket.open .ticketBody{display:block;}
+  .ticketBody{padding:0 16px 16px 18px; display:none;}
+  .ticket.open .ticketBody{display:block; animation:revealBody .35s ease;}
+  @keyframes revealBody{from{opacity:0; transform:translateY(-7px);} to{opacity:1; transform:none;}}
 
-  .taskList{list-style:none; margin:12px 0 0; padding:0;}
+  /* ---------- TAREAS ---------- */
+  .taskList{list-style:none; margin:14px 0 0; padding:0;}
   .taskItem{
-    display:flex; align-items:flex-start; gap:10px; padding:7px 0;
-    border-bottom:1px dotted #e3dccd; font-size:14px; line-height:1.4;
+    display:flex; align-items:flex-start; gap:10px; padding:8px 0;
+    border-bottom:1px solid var(--line); font-size:14px; line-height:1.45; color:var(--ink);
   }
   .taskItem:last-child{border-bottom:none;}
   .taskItem input[type=checkbox]{
-    margin-top:3px; width:17px; height:17px; accent-color:var(--good); cursor:pointer; flex-shrink:0;
+    margin-top:2px; width:18px; height:18px; accent-color:var(--good); cursor:pointer; flex-shrink:0;
   }
-  .taskItem.checked label{ text-decoration:line-through; color:var(--muted); }
+  .taskItem.checked label{text-decoration:line-through; color:var(--muted);}
 
-  .noteWrap{margin-top:14px;}
-  .noteWrap label{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;}
+  /* ---------- NOTAS / TEXTAREAS ---------- */
+  .noteWrap{margin-top:16px;}
+  .noteWrap label{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:7px;}
   textarea{
     width:100%; min-height:60px; resize:vertical;
-    border:1px solid var(--ink); border-radius:6px; padding:8px 10px;
-    font-family:'Inter',sans-serif; font-size:13.5px; background:var(--paper);
-    color:var(--ink);
+    border:1px solid var(--line); border-radius:8px; padding:9px 11px;
+    font-family:'Inter',sans-serif; font-size:13.5px; background:var(--navy-deep); color:var(--ink);
   }
-  textarea:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  textarea::placeholder{color:#5E7187;}
+  textarea:focus{outline:2px solid var(--gold); outline-offset:1px;}
 
-  .ticketActions{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+  /* ---------- BOTONES ---------- */
+  .ticketActions{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; align-items:center;}
   button{
-    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
-    border:1.5px solid var(--ink); border-radius:7px; padding:9px 14px;
-    background:#fff; color:var(--ink); cursor:pointer;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.03em;
+    border:1px solid var(--line); border-radius:9px; padding:9px 14px;
+    background:var(--raised); color:var(--ink); cursor:pointer;
+    transition:transform .12s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
   }
+  button:hover{border-color:var(--gold-line); box-shadow:0 4px 14px -8px rgba(0,0,0,.8);}
   button:active{transform:translateY(1px);}
-  button.primary{background:var(--accent); color:#fff; border-color:var(--accent);}
-  button.primary:disabled{background:var(--good-dim); color:var(--muted); border-color:var(--muted); cursor:not-allowed;}
-  button:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  button.primary{
+    background:linear-gradient(180deg,var(--gold-2),var(--gold)); color:#231A06; border-color:var(--gold);
+    font-weight:700; box-shadow:0 6px 18px -8px rgba(231,184,92,.7);
+  }
+  button.primary:hover{filter:brightness(1.05);}
+  button.primary:disabled{background:var(--panel-2); color:var(--muted); border-color:var(--line); cursor:not-allowed; box-shadow:none; font-weight:500;}
+  button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
 
-  .lockNote{font-size:12px; color:var(--muted); margin-top:8px; font-style:italic;}
+  .lockNote{font-size:12px; color:var(--muted); margin-top:10px; font-style:italic;}
 
   #installBtn{
     position:fixed; bottom:18px; right:18px; z-index:30;
     display:none; align-items:center; gap:8px;
-    background:var(--ink); color:#fff; border:none; border-radius:30px;
-    padding:12px 18px; box-shadow:0 8px 20px rgba(0,0,0,.25); font-size:13px;
+    background:linear-gradient(180deg,var(--gold-2),var(--gold)); color:#231A06; border:none; border-radius:30px;
+    padding:12px 18px; box-shadow:0 10px 24px rgba(0,0,0,.4); font-size:13px; font-weight:700; cursor:pointer;
   }
 
-  .syncRow{display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap;}
+  /* ---------- SYNC ---------- */
+  .syncRow{display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap;}
   .syncStatus{font-size:11px; color:var(--muted); letter-spacing:.04em;}
   .syncStatus.ok{color:var(--good);}
-  .syncStatus.warn{color:var(--accent);}
-  .syncBtn{padding:6px 12px; font-size:11px; border-radius:20px;}
+  .syncStatus.warn{color:var(--warn);}
+  .syncBtn{padding:6px 12px; font-size:10.5px; border-radius:20px; background:transparent; border-color:var(--gold-line); color:var(--gold);}
 
-  .modalOverlay{
-    position:fixed; inset:0; z-index:50;
-    background:rgba(43,38,32,.55);
-    display:flex; align-items:center; justify-content:center; padding:20px;
-  }
+  /* ---------- MODAL ---------- */
+  .modalOverlay{position:fixed; inset:0; z-index:50; background:rgba(4,10,18,.75); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:20px;}
   .modalOverlay[hidden]{display:none;}
   .modalCard{
-    background:var(--paper); border:2px solid var(--ink); border-radius:12px;
-    max-width:420px; width:100%; padding:22px 20px; box-shadow:var(--shadow);
+    background:linear-gradient(180deg,var(--panel-2),var(--panel)); border:1px solid var(--gold-line); border-radius:16px;
+    max-width:430px; width:100%; padding:24px 22px; box-shadow:var(--shadow); animation:revealBody .3s ease;
   }
-  .modalCard h2{margin:0 0 10px; font-size:18px; line-height:1.25;}
-  .modalCard p{font-size:13.5px; line-height:1.5; margin:0 0 12px;}
+  .modalCard h2{margin:0 0 10px; font-size:18px; line-height:1.25; color:var(--ink);}
+  .modalCard p{font-size:13.5px; line-height:1.55; margin:0 0 12px; color:var(--muted);}
   .modalCard input{
-    width:100%; border:1.5px solid var(--ink); border-radius:8px; padding:10px 12px;
-    font-family:'JetBrains Mono',monospace; font-size:14px; background:#fff; color:var(--ink);
+    width:100%; border:1px solid var(--line); border-radius:9px; padding:11px 13px;
+    font-family:'JetBrains Mono',monospace; font-size:16px; letter-spacing:.18em; text-align:center;
+    background:var(--navy-deep); color:var(--ink);
   }
-  .modalCard input:focus{outline:2px solid var(--accent); outline-offset:1px;}
-  .codeError{color:var(--accent); font-size:12px; margin:8px 0 0;}
+  .modalCard input:focus{outline:2px solid var(--gold); outline-offset:1px;}
+  .codeError{color:var(--warn); font-size:12px; margin:8px 0 0;}
   .codeError[hidden]{display:none;}
-  .modalActions{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;}
+  .modalActions{display:flex; gap:8px; margin-top:18px; flex-wrap:wrap;}
   .modalActions .primary{flex:1;}
 
-  /* ---- contenido enriquecido por día ---- */
+  /* ---------- CONTENIDO POR DÍA ---------- */
   .dayGoal{
-    background:var(--good-dim); border:1px solid var(--good); border-radius:8px;
-    padding:9px 11px; font-size:13.5px; line-height:1.45; margin-top:12px;
+    background:var(--good-soft); border:1px solid rgba(84,192,138,.4); border-radius:10px;
+    padding:10px 12px; font-size:13.5px; line-height:1.5; margin-top:14px; color:var(--ink);
   }
-  .sectionLabel{
-    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.08em;
-    text-transform:uppercase; color:var(--muted); margin:18px 0 6px;
-  }
-  .learnBox{
-    margin-top:12px; border:1px dashed var(--muted); border-radius:8px;
-    padding:0 12px; background:#fff;
-  }
-  .learnBox summary{
-    cursor:pointer; padding:11px 0; font-weight:600; font-size:14px; list-style:none;
-  }
+  .sectionLabel{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin:18px 0 7px;}
+  .learnBox{margin-top:14px; border:1px solid var(--line); border-radius:10px; padding:0 13px; background:var(--navy-deep);}
+  .learnBox summary{cursor:pointer; padding:12px 0; font-weight:600; font-size:14px; list-style:none; color:var(--ink);}
   .learnBox summary::-webkit-details-marker{display:none;}
-  .learnBox summary::before{content:'▸ '; color:var(--accent);}
+  .learnBox summary::before{content:'▸ '; color:var(--gold);}
   .learnBox[open] summary::before{content:'▾ ';}
-  .learnBox p{font-size:13.5px; line-height:1.55; margin:0 0 10px;}
-  .resList{display:flex; flex-direction:column; gap:7px; padding-bottom:12px;}
-  .resList a{color:var(--accent); font-size:13px; text-decoration:none;}
+  .learnBox p{font-size:13.5px; line-height:1.6; margin:0 0 12px; color:var(--muted);}
+  .resList{display:flex; flex-direction:column; gap:8px; padding-bottom:13px;}
+  .resList a{color:var(--gold); font-size:13px; text-decoration:none;}
   .resList a:hover{text-decoration:underline;}
 
-  .promptBox{
-    margin-top:14px; border:1.5px solid var(--ink); border-radius:8px;
-    overflow:hidden; background:#fff;
-  }
-  .promptHead{
-    background:var(--ink); color:var(--paper);
-    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.03em;
-    padding:9px 12px; line-height:1.35;
-  }
-  .promptText{
-    margin:0; padding:12px; font-family:'JetBrains Mono',monospace; font-size:12.5px;
-    line-height:1.55; white-space:pre-wrap; word-break:break-word; color:var(--ink);
-    border-bottom:1px dashed #e3dccd;
-  }
-  .promptFoot{padding:10px 12px;}
-  .copyBtn{font-size:11px; padding:7px 12px;}
+  .promptBox{margin-top:14px; border:1px solid var(--gold-line); border-radius:10px; overflow:hidden; background:var(--navy-deep);}
+  .promptHead{background:var(--gold-soft); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.04em; padding:10px 12px; line-height:1.4; border-bottom:1px solid var(--gold-line);}
+  .promptText{margin:0; padding:13px; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.6; white-space:pre-wrap; word-break:break-word; color:var(--ink);}
+  .promptFoot{padding:0 13px 13px;}
+  .copyBtn{font-size:10.5px; padding:7px 12px;}
 
-  .closeBox{margin-top:18px; border-top:2px dashed var(--muted); padding-top:14px;}
-  .closeHint{font-size:12.5px; color:var(--muted); line-height:1.45; margin:0 0 10px;}
-  .stepLabel{
-    display:block; font-family:'JetBrains Mono',monospace; font-size:11px;
-    letter-spacing:.05em; color:var(--ink); font-weight:500; margin:12px 0 5px;
-  }
+  .closeBox{margin-top:20px; border-top:1px dashed var(--gold-line); padding-top:16px;}
+  .closeHint{font-size:12.5px; color:var(--muted); line-height:1.5; margin:0 0 12px;}
+  .stepLabel{display:block; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.06em; color:var(--gold); font-weight:500; margin:14px 0 6px; text-transform:uppercase;}
   .codeArea, .evalArea{
-    width:100%; min-height:90px; resize:vertical;
-    border:1px solid var(--ink); border-radius:6px; padding:9px 11px;
-    font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.5;
-    background:#fbfaf6; color:var(--ink);
+    width:100%; min-height:96px; resize:vertical;
+    border:1px solid var(--line); border-radius:8px; padding:10px 12px;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.55;
+    background:#06101B; color:#CFE3F4;
   }
-  .codeArea:focus, .evalArea:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .codeArea::placeholder, .evalArea::placeholder{color:#4F6478;}
+  .codeArea:focus, .evalArea:focus{outline:2px solid var(--gold); outline-offset:1px;}
   .evalPromptOut{
-    margin:10px 0 0; padding:11px; border:1px solid var(--muted); border-radius:6px;
-    background:#fbfaf6; font-family:'JetBrains Mono',monospace; font-size:12px;
-    line-height:1.55; white-space:pre-wrap; word-break:break-word;
-    max-height:240px; overflow:auto;
+    margin:11px 0 0; padding:12px; border:1px solid var(--line); border-radius:8px;
+    background:#06101B; color:#CFE3F4; font-family:'JetBrains Mono',monospace; font-size:12px;
+    line-height:1.6; white-space:pre-wrap; word-break:break-word; max-height:240px; overflow:auto;
   }
-  .verdictBadge{
-    font-family:'JetBrains Mono',monospace; font-size:12px; align-self:center; color:var(--muted);
+  .verdictBadge{font-family:'JetBrains Mono',monospace; font-size:12px; align-self:center; color:var(--muted);}
+  .verdictBadge.ok{color:var(--good); font-weight:700;}
+  .verdictBadge.warn{color:var(--warn); font-weight:700;}
+
+  /* ---------- CELEBRACIÓN (despegue) ---------- */
+  .celebrate{position:fixed; inset:0; z-index:60; pointer-events:none; display:flex; align-items:center; justify-content:center;}
+  .celebrate .msg{
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:28px; text-align:center;
+    color:var(--gold); text-shadow:0 4px 30px rgba(231,184,92,.7); animation:pop 1.8s ease forwards;
   }
-  .verdictBadge.ok{color:var(--good); font-weight:600;}
-  .verdictBadge.warn{color:var(--accent); font-weight:600;}
+  @keyframes pop{0%{transform:scale(.6) translateY(10px); opacity:0;}15%{transform:scale(1.1); opacity:1;}70%{opacity:1;}100%{transform:scale(1) translateY(-26px); opacity:0;}}
+  .confetti{position:fixed; top:-24px; z-index:59; pointer-events:none; font-size:16px; animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(112vh) rotate(420deg); opacity:.15;}}
 
   @media (prefers-reduced-motion: reduce){
-    .progressFill{transition:none;}
+    .flightTrail, .flightPlane, .ticket, .ticketHead, button{transition:none;}
+    .ticket.open .ticketBody, .modalCard, .celebrate .msg, .confetti{animation:none;}
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="eyebrow mono">TRIPLE 7 · Bitácora de construcción ✈</div>
-  <h1>Tu plan de vuelo para construir Triple 7</h1>
+  <div class="brandRow">
+    <div class="roundel">777</div>
+    <div>
+      <div class="eyebrow mono">Triple 7 · Plan de vuelo ✈</div>
+      <h1>Bitácora de construcción</h1>
+    </div>
+  </div>
   <div class="syncRow">
     <span id="syncStatus" class="syncStatus mono">Sin conectar a la nube</span>
     <button id="syncBtn" class="syncBtn mono">Conectar a la nube</button>
@@ -290,8 +337,17 @@
 
 <div id="alertBanner"></div>
 
-<div class="progressWrap">
-  <div class="progressBar"><div class="progressFill" id="progressFill"></div></div>
+<div class="flightWrap">
+  <div class="flightHead">
+    <span>🛫 Despegue</span>
+    <span>Triple 7 🏁</span>
+  </div>
+  <div class="flightTrack">
+    <span class="flightDot start"></span>
+    <div class="flightTrail" id="progressFill"></div>
+    <div class="flightPlane" id="progressPlane">✈️</div>
+    <span class="flightDot end">🏁</span>
+  </div>
   <div class="progressLabel" id="progressLabel">0 / 0 días cumplidos</div>
 </div>
 
@@ -1060,6 +1116,35 @@ function refreshCloseBtn(i){
   btn.disabled = d.closed || i !== todayIndex || !(d.code && d.code.trim()) || !d.verdict;
 }
 
+/* Bloque al que pertenece cada día (para color y etiqueta) */
+function blockOf(i){
+  if (i <= 5) return { ticketCls: 'blk-fund',  tag: 'Fundamentos',  tagCls: 'fund'  };
+  if (i <= 8) return { ticketCls: 'blk-tools', tag: 'Herramientas', tagCls: 'tools' };
+  return { ticketCls: 'blk-phase', tag: 'Triple 7', tagCls: 'phase' };
+}
+
+/* Animación de despegue al aprobar un día */
+function celebrate(){
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const layer = document.createElement('div');
+  layer.className = 'celebrate';
+  layer.innerHTML = '<div class="msg">✈️ ¡DESPEGUE!<br>Día aprobado</div>';
+  document.body.appendChild(layer);
+  const icons = ['✈️', '✦', '★', '•', '🟡'];
+  for (let k = 0; k < 22; k++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.textContent = icons[Math.floor(Math.random() * icons.length)];
+    c.style.left = (Math.random() * 100) + 'vw';
+    c.style.animationDuration = (1.1 + Math.random() * 1.4) + 's';
+    c.style.animationDelay = (Math.random() * 0.3) + 's';
+    c.style.fontSize = (12 + Math.random() * 12) + 'px';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 2800);
+  }
+  setTimeout(() => layer.remove(), 1900);
+}
+
 /* ============== CERRAR UN DÍA ============== */
 function closeDay(i){
   const d = getDay(i);
@@ -1077,6 +1162,7 @@ function closeDay(i){
     const bonus = 15 + (done === total ? 5 : 0) + (state.streak % 7 === 0 ? 20 : 0);
     state.points += bonus;
     showAlert(`Día ${i+1} APROBADO por la IA ✅ +${bonus} puntos. Racha: ${state.streak} 🔥`);
+    celebrate();
   } else {
     state.streak = 0;
     state.points = Math.max(0, state.points - 5);
@@ -1101,7 +1187,9 @@ function render(){
     todayIndex >= 0 && todayIndex < PLAN.length ? `Día ${todayIndex+1}` : (todayIndex < 0 ? '— aún no inicia —' : '¡plan terminado!');
 
   const closedCount = PLAN.filter((_, i) => state.days[dayKey(i)] && state.days[dayKey(i)].closed).length;
-  document.getElementById('progressFill').style.width = `${Math.round(closedCount/PLAN.length*100)}%`;
+  const pct = Math.round(closedCount / PLAN.length * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPlane').style.left = pct + '%';
   document.getElementById('progressLabel').textContent = `${closedCount} / ${PLAN.length} días cumplidos`;
 
   const container = document.getElementById('ticketsContainer');
@@ -1116,7 +1204,8 @@ function render(){
     const closeDisabled = d.closed || !isToday || !(d.code && d.code.trim()) || !d.verdict;
 
     const ticket = document.createElement('div');
-    ticket.className = 'ticket' + (isToday ? ' today' : '') + (isLocked ? ' locked' : '') + (d.closed ? ' done' : '') + (openIndex === i ? ' open' : '');
+    const blk = blockOf(i);
+    ticket.className = 'ticket ' + blk.ticketCls + (isToday ? ' today' : '') + (isLocked ? ' locked' : '') + (d.closed ? ' done' : '') + (openIndex === i ? ' open' : '');
 
     let badge = '';
     if (isLocked) badge = `<span class="badge bloqueado">Bloqueado</span>`;
@@ -1127,7 +1216,10 @@ function render(){
     ticket.innerHTML = `
       <div class="ticketHead" data-idx="${i}">
         <div class="dayMeta">
-          <span class="dayNum mono">Día ${i+1} de ${PLAN.length}</span>
+          <div class="topLine">
+            <span class="dayNum mono">Día ${i+1} de ${PLAN.length}</span>
+            <span class="blockTag ${blk.tagCls}">${blk.tag}</span>
+          </div>
           <span class="dayTitle">${escapeHtml(dayPlan.title)}</span>
           <span class="dayDate mono">${fmtDate(dDate)}</span>
         </div>
