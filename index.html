@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bitácora del Proyecto — Sistema Restaurante</title>
+<title>Bitácora — Construcción de Triple 7</title>
 <meta name="theme-color" content="#C1432F">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
@@ -265,8 +265,8 @@
 <body>
 
 <header>
-  <div class="eyebrow mono">Sistema de Restaurante · Bitácora de avance</div>
-  <h1>Tu cuaderno de pedidos del aprendizaje</h1>
+  <div class="eyebrow mono">TRIPLE 7 · Bitácora de construcción ✈</div>
+  <h1>Tu plan de vuelo para construir Triple 7</h1>
   <div class="syncRow">
     <span id="syncStatus" class="syncStatus mono">Sin conectar a la nube</span>
     <button id="syncBtn" class="syncBtn mono">Conectar a la nube</button>
@@ -330,209 +330,477 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
 
-/* ============== DATOS DEL PLAN (14 días) ============== */
+/* ============== DATOS DEL PLAN — TRIPLE 7 (32 días) ============== */
+/* Bloque A (1-6): Fundamentos · B (7-9): Herramientas · C-L (10-32): Fases 0-9 de Triple 7 sobre Supabase */
 const PLAN = [
   {
-    title: "Esqueleto del menú",
-    goal: "Tener un index.html que abra en el navegador y muestre el título y las 3 categorías del menú.",
-    explain: "HTML es el esqueleto de toda página web: define QUÉ cosas hay (títulos, textos, listas). Hoy creas el archivo base y escribes a mano las 3 categorías. Todavía sin estilos: solo la estructura. Lo importante es entender etiquetas como <h1>, <h2> y <p>, y que todo va dentro de <body>.",
+    title: "HTML: tu primera página",
+    goal: "Crear y abrir en el navegador tu primera página HTML con un título y secciones.",
+    explain: "HTML es el esqueleto de toda web: define QUÉ hay (títulos, textos, secciones). Hoy aprendes las etiquetas básicas (<h1>, <p>, <section>) y que todo vive dentro de <body>. Es la base de TODO el sistema Triple 7.",
     resources: [
       { label: "MDN — Introducción a HTML", url: "https://developer.mozilla.org/es/docs/Learn/HTML/Introduction_to_HTML/Getting_started" },
-      { label: "W3Schools — HTML básico", url: "https://www.w3schools.com/html/html_basic.asp" }
+      { label: "freeCodeCamp — Aprender (español)", url: "https://www.freecodecamp.org/espanol/learn/" }
     ],
-    startPrompt: "Soy principiante total. Explícame con palabras simples qué es un archivo HTML y para qué sirven las etiquetas <head>, <body>, <h1> y <h2>. NO me des el código completo todavía: guíame paso a paso para que YO escriba a mano el esqueleto de un menú de restaurante con 3 categorías (Entradas, Platos fuertes y Bebidas).",
+    startPrompt: "Soy principiante total, nunca he programado. Explícame con palabras simples qué es HTML y para qué sirven <head>, <body>, <h1> y <p>. Guíame paso a paso para crear MI primera página y abrirla en el navegador. No me des todo hecho: que yo escriba.",
     tasks: [
-      "Crear el archivo index.html del proyecto restaurante",
-      "Agregar la estructura básica: head, body, título",
-      "Escribir a mano (sin IA) 3 categorías: Entradas, Platos fuertes, Bebidas"
+      "Crear un archivo index.html en un editor de texto",
+      "Escribir la estructura básica (head, body, un título)",
+      "Abrir el archivo en el navegador y ver tu título"
     ]
   },
   {
-    title: "Platos del menú",
-    goal: "Cada categoría tiene al menos 3 platos con nombre y precio, usando listas.",
-    explain: "Las listas (<ul> y <li>) sirven para mostrar varios elementos ordenados, perfectas para platos. Hoy llenas el menú con contenido real. Clave: cada etiqueta que abres (<li>) hay que cerrarla (</li>), o la página se ve rota.",
+    title: "HTML: contenido y formularios",
+    goal: "Usar listas, imágenes, enlaces y un formulario sencillo.",
+    explain: "Una web real tiene listas, imágenes, enlaces y formularios (los usarás para el login y los pedidos). Hoy practicas estas etiquetas. Regla de oro: toda etiqueta que abres, ciérrala.",
     resources: [
       { label: "MDN — Texto y listas en HTML", url: "https://developer.mozilla.org/es/docs/Learn/HTML/Introduction_to_HTML/HTML_text_fundamentals" },
-      { label: "W3Schools — Listas HTML", url: "https://www.w3schools.com/html/html_lists.asp" }
+      { label: "MDN — Formularios", url: "https://developer.mozilla.org/es/docs/Learn/Forms" }
     ],
-    startPrompt: "Explícame cómo funcionan las listas en HTML (<ul>, <ol>, <li>) con un ejemplo corto. Luego dame una guía (no la solución completa) para agregar 3 platos con su nombre y precio en cada categoría de mi menú.",
+    startPrompt: "Explícame con ejemplos cortos las listas (<ul>, <li>), imágenes (<img>), enlaces (<a>) y un formulario básico (<form>, <input>, <button>) en HTML. Guíame para que YO arme una página con esos elementos.",
     tasks: [
-      "Agregar 3 platos por categoría con nombre y precio",
-      "Usar listas o párrafos para ordenar la información",
-      "Revisar que el HTML cierre todas las etiquetas correctamente"
+      "Crear una lista y agregar enlaces e imagen",
+      "Crear un formulario con campos de texto y un botón",
+      "Validar que todas las etiquetas estén cerradas"
     ]
   },
   {
-    title: "Estilos base (CSS)",
-    goal: "El menú tiene colores y tipografía propios; los títulos de categoría se ven distintos al texto normal.",
-    explain: "CSS es la 'ropa' de la página: colores, tamaños y fuentes. Se escribe en un archivo .css que enlazas con <link> dentro del <head>. Hoy aprendes selectores (a qué elemento aplicar estilo) y propiedades como color, background y font-family.",
+    title: "CSS y el estilo Triple 7",
+    goal: "Dar color y tipografía con el tema retro-aviación: azul oscuro, dorado y blanco.",
+    explain: "CSS es la 'ropa' de la web: colores, fuentes, tamaños. Hoy defines la paleta de Triple 7 (azul oscuro + dorado + blanco) y la tipografía con variables CSS. Esto marca la identidad de todo el sistema.",
     resources: [
       { label: "MDN — CSS: primeros pasos", url: "https://developer.mozilla.org/es/docs/Learn/CSS/First_steps" },
-      { label: "freeCodeCamp — Cursos en español", url: "https://www.freecodecamp.org/espanol/learn/" }
+      { label: "freeCodeCamp — Aprender (español)", url: "https://www.freecodecamp.org/espanol/learn/" }
     ],
-    startPrompt: "Explícame qué es CSS y cómo enlazar un archivo style.css a mi HTML con <link>. Muéstrame con un ejemplo simple cómo cambiar el color y la tipografía. Guíame para dar estilo a los títulos de las categorías de mi menú, sin darme todo el archivo hecho.",
+    startPrompt: "Explícame qué es CSS y cómo enlazar un archivo .css. Quiero un tema 'aeropuerto retro' para Triple 7: azul oscuro, dorado y blanco. Muéstrame cómo definir colores y tipografía con variables CSS y guíame para aplicarlo, sin hacerlo todo por mí.",
     tasks: [
-      "Crear el archivo style.css y enlazarlo al HTML",
-      "Definir colores y tipografía del restaurante",
-      "Darle estilo a los títulos de cada categoría"
+      "Crear style.css y enlazarlo a tu página",
+      "Definir la paleta (azul oscuro, dorado, blanco) con variables CSS",
+      "Aplicar colores y una tipografía al título y textos"
     ]
   },
   {
-    title: "Tarjetas de platos",
-    goal: "Cada plato se ve como una tarjeta con borde y sombra, acomodadas en fila con Flexbox.",
-    explain: "Una 'tarjeta' (card) es una caja con borde, espacio interno (padding) y sombra. Flexbox es la forma moderna de acomodar cajas en fila o columna. Hoy combinas ambos para que el menú se vea ordenado y profesional.",
+    title: "Layout con Flexbox y Grid",
+    goal: "Acomodar elementos en filas/columnas y que se vea bien en celular (responsive).",
+    explain: "Flexbox y Grid son las herramientas modernas para ordenar cajas en pantalla. Con 'media queries' la página se adapta al celular. Lo usarás en TODAS las pantallas: cliente, cocina, caja, mesero...",
     resources: [
-      { label: "MDN — Flexbox", url: "https://developer.mozilla.org/es/docs/Learn/CSS/CSS_layout/Flexbox" },
+      { label: "MDN — Maquetación CSS", url: "https://developer.mozilla.org/es/docs/Learn/CSS/CSS_layout" },
       { label: "CSS-Tricks — Guía de Flexbox", url: "https://css-tricks.com/snippets/css/a-guide-to-flexbox/" }
     ],
-    startPrompt: "Explícame qué es Flexbox y para qué sirven display:flex, gap y flex-wrap, con un ejemplo mínimo. Luego guíame para convertir cada plato de mi menú en una tarjeta con borde, padding y sombra, acomodadas en fila.",
+    startPrompt: "Explícame Flexbox y Grid con ejemplos mínimos, y cómo hacer una página responsive con media queries. Guíame para acomodar unas tarjetas en fila en PC y en columna en celular.",
     tasks: [
-      "Convertir cada plato en una tarjeta (card) con borde y sombra",
-      "Usar Flexbox para acomodar las tarjetas en fila",
-      "Probar cómo se ven con 6+ platos en pantalla"
+      "Acomodar tarjetas con Flexbox o Grid",
+      "Agregar una media query para celular",
+      "Probar en el modo móvil del navegador (F12)"
     ]
   },
   {
-    title: "Menú responsive",
-    goal: "El menú se ve bien tanto en computadora como en celular.",
-    explain: "Responsive significa que la página se adapta al tamaño de la pantalla. Se logra con 'media queries': reglas CSS que cambian el diseño cuando la pantalla es pequeña. Hoy haces que las tarjetas pasen de fila (en PC) a columna (en celular).",
+    title: "JavaScript: variables, funciones y eventos",
+    goal: "Hacer que la página reaccione: un botón que ejecuta una acción.",
+    explain: "JavaScript le da vida a la web: reacciona a clics, cambia textos, calcula. Hoy aprendes variables, funciones, console.log y addEventListener. Es el motor de toda la lógica del sistema.",
     resources: [
-      { label: "MDN — Diseño responsive", url: "https://developer.mozilla.org/es/docs/Learn/CSS/CSS_layout/Responsive_Design" },
-      { label: "W3Schools — Media queries", url: "https://www.w3schools.com/css/css_rwd_mediaqueries.asp" }
-    ],
-    startPrompt: "Explícame qué es el diseño responsive y cómo funcionan las media queries (@media) en CSS, con un ejemplo. Guíame para que las tarjetas de mi menú se pongan en una sola columna en pantallas de celular.",
-    tasks: [
-      "Hacer que las tarjetas se acomoden en columna en pantallas pequeñas",
-      "Probar el menú en el modo celular del navegador (F12)",
-      "Ajustar tamaños de texto para que se lea bien en móvil"
-    ]
-  },
-  {
-    title: "Imágenes y detalles",
-    goal: "Cada plato tiene una imagen o ícono y el menú se ve cuidado.",
-    explain: "La etiqueta <img> muestra imágenes; siempre lleva src (la ruta del archivo) y alt (texto que describe la imagen). Hoy agregas imágenes y revisas detalles: espacios, alineación y que todo se entienda. Mostrárselo a alguien ayuda a ver fallos que tú ya no notas.",
-    resources: [
-      { label: "MDN — Imágenes en HTML", url: "https://developer.mozilla.org/es/docs/Learn/HTML/Multimedia_and_embedding/Images_in_HTML" }
-    ],
-    startPrompt: "Explícame cómo usar la etiqueta <img> en HTML (src y alt) y cómo ajustar el tamaño de una imagen con CSS. Guíame para agregar una imagen o ícono a cada tarjeta de plato y mejorar el espaciado, sin hacerlo todo por mí.",
-    tasks: [
-      "Agregar una imagen o ícono a cada plato",
-      "Revisar espaciados y alineación general",
-      "Mostrarle el menú a alguien y anotar qué no se entiende"
-    ]
-  },
-  {
-    title: "JavaScript: primeros pasos",
-    goal: "Tienes un app.js enlazado que escribe en la consola y un botón que muestra una alerta.",
-    explain: "JavaScript le da vida a la página: reacciona a clics, cambia cosas y hace cálculos. Se enlaza con <script src='app.js'> al final del body. Hoy aprendes console.log (para ver mensajes en la consola del navegador, tecla F12) y a responder a un clic con addEventListener.",
-    resources: [
-      { label: "MDN — JavaScript: primeros pasos", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps/What_is_JavaScript" },
+      { label: "MDN — JavaScript: primeros pasos", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps" },
       { label: "MDN — Eventos (clics)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Events" }
     ],
-    startPrompt: "Soy principiante en JavaScript. Explícame qué es, cómo enlazar app.js a mi HTML, qué hace console.log y cómo hacer que un botón muestre una alerta al hacer clic. Dame ejemplos cortos y guíame; no me des el proyecto completo.",
+    startPrompt: "Soy principiante en JavaScript. Explícame variables, funciones, console.log y cómo hacer que un botón ejecute algo con addEventListener. Dame ejemplos cortos y guíame para que un botón cambie un texto en la página.",
     tasks: [
-      "Crear el archivo app.js y enlazarlo al HTML",
-      "Mostrar un mensaje en consola al cargar la página",
-      "Hacer que un botón muestre una alerta al hacer clic"
+      "Enlazar un archivo .js y usar console.log",
+      "Crear una función y llamarla desde un botón",
+      "Cambiar el contenido de la página al hacer clic"
     ]
   },
   {
-    title: "Agregar al carrito (1 plato)",
-    goal: "Al hacer clic en 'Agregar', se guarda un plato y se muestra su nombre en pantalla.",
-    explain: "Hoy conectas un botón con una acción. Aprendes a guardar información en una variable y a cambiar el contenido de la página con JavaScript (textContent). Es el primer ladrillo del carrito de compras.",
+    title: "JavaScript: datos y traer información",
+    goal: "Manejar arrays/objetos y entender cómo se piden datos a un servidor (fetch/async).",
+    explain: "El menú, los pedidos y los usuarios son listas de objetos. Hoy practicas arrays y objetos, y ves la idea de fetch y async/await (cómo la app pedirá datos a Supabase). Es la base para conectar con el backend.",
     resources: [
-      { label: "MDN — Variables", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps/Variables" },
-      { label: "MDN — Eventos (clics)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Events" }
+      { label: "MDN — Bloques de JavaScript", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks" },
+      { label: "MDN — JavaScript asíncrono", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Asynchronous" }
     ],
-    startPrompt: "Explícame cómo, al hacer clic en un botón, puedo guardar un dato en una variable y mostrarlo en la página con JavaScript (textContent). Dame un ejemplo simple y guíame para hacer un botón 'Agregar' que muestre el nombre del plato elegido.",
+    startPrompt: "Explícame con ejemplos arrays y objetos en JavaScript, y de forma simple qué es fetch y async/await (para pedir datos a un servidor). Guíame para recorrer una lista de objetos (ej. platos) y mostrarla en pantalla.",
     tasks: [
-      "Crear un botón 'Agregar' en una tarjeta de plato",
-      "Guardar ese plato en una variable al hacer clic",
-      "Mostrar en pantalla el nombre del plato agregado"
+      "Crear un array de objetos (platos con nombre y precio)",
+      "Recorrerlo y mostrarlo en la página",
+      "Leer qué es fetch/async (sin conectar aún)"
     ]
   },
   {
-    title: "Carrito con varios platos",
-    goal: "Un array guarda todos los platos agregados y se muestra la lista completa.",
-    explain: "Un array es una lista de datos en JavaScript, por ejemplo ['Tacos','Agua']. Con .push() agregas elementos al final. Hoy haces que cada botón meta su plato al array y que la pantalla muestre toda la lista del carrito.",
+    title: "Tu taller: Node, VS Code y Claude Code",
+    goal: "Tener instalado el entorno profesional para programar.",
+    explain: "Hasta hoy bastaba un editor simple; ahora preparas el entorno real: Node.js (para las herramientas), VS Code (editor pro) y Claude Code (tu copiloto IA en la terminal). Con esto trabajarás como un dev de verdad.",
     resources: [
-      { label: "MDN — Arrays", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps/Arrays" }
+      { label: "Node.js (descarga)", url: "https://nodejs.org/es" },
+      { label: "Claude Code — Introducción", url: "https://docs.anthropic.com/es/docs/claude-code/overview" }
     ],
-    startPrompt: "Explícame qué es un array en JavaScript y cómo agregar elementos con push(), con un ejemplo corto. Guíame para crear un carrito (un array) donde cada botón 'Agregar' meta su plato, y para mostrar la lista completa en pantalla.",
+    startPrompt: "Guíame paso a paso para instalar Node.js y VS Code, verificar que quedaron bien (node -v) y entender qué es la terminal. Explícame también, en simple, qué es Claude Code y cómo me ayudará a programar Triple 7.",
     tasks: [
-      "Crear un array vacío que representa el carrito",
-      "Hacer que cada botón 'Agregar' meta su plato al array",
-      "Mostrar en pantalla la lista completa del carrito"
+      "Instalar Node.js y comprobar con node -v",
+      "Instalar VS Code y abrir tu carpeta de proyecto",
+      "Probar la terminal con un comando básico"
     ]
   },
   {
-    title: "Calcular el total",
-    goal: "El total en dinero se calcula sumando los precios del carrito y se actualiza solo.",
-    explain: "Para sumar todos los precios recorres el array con un bucle (for). Hoy muestras el total y haces que se actualice cada vez que agregas o quitas un plato. Cuida que los precios sean números para que la suma funcione.",
+    title: "Git y GitHub",
+    goal: "Guardar tu código con control de versiones y subirlo a GitHub.",
+    explain: "Git guarda 'fotos' (commits) de tu código para no perder nada y poder volver atrás; GitHub lo guarda en la nube. Es indispensable: un día sin Git es un día en riesgo de perder trabajo.",
     resources: [
-      { label: "MDN — Bucles (recorrer listas)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Looping_code" }
+      { label: "Atlassian — Control de versiones", url: "https://www.atlassian.com/es/git/tutorials/what-is-version-control" },
+      { label: "GitHub — Empezar (español)", url: "https://docs.github.com/es/get-started/start-your-journey/about-github-and-git" }
     ],
-    startPrompt: "Explícame cómo recorrer un array con un bucle for y sumar valores, con un ejemplo. Guíame para sumar los precios de los platos de mi carrito y mostrar el total en pantalla, actualizado en tiempo real.",
+    startPrompt: "Explícame en simple qué es Git y GitHub y por qué se usan. Guíame paso a paso para crear un repositorio, hacer mi primer commit y subirlo a GitHub. Asume que nunca lo he hecho.",
     tasks: [
-      "Recorrer el array del carrito y sumar los precios",
-      "Mostrar el total en pantalla, actualizado en tiempo real",
-      "Probar agregando y quitando platos para verificar la suma"
+      "Crear una cuenta de GitHub y un repositorio",
+      "Hacer tu primer commit del proyecto",
+      "Subir (push) el proyecto a GitHub"
     ]
   },
   {
-    title: "Quitar platos del carrito",
-    goal: "Cada plato del carrito tiene un botón 'Quitar' que lo elimina y recalcula el total.",
-    explain: "Para quitar un elemento de un array se usa splice() (por posición) o filter(). Hoy agregas un botón 'Quitar' por plato y te aseguras de que el total se vuelva a calcular bien después de eliminar.",
+    title: "React + Vite: base de Triple 7",
+    goal: "Crear el proyecto real de Triple 7 con React + Vite y entender los componentes.",
+    explain: "React arma la interfaz con 'componentes' (piezas reutilizables, como un Botón o una TarjetaDePlato). Vite es la herramienta que lo monta y lo muestra rapidísimo. Hoy nace el proyecto real.",
     resources: [
-      { label: "MDN — Array.splice()", url: "https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/splice" }
+      { label: "React — Aprende (español)", url: "https://es.react.dev/learn" },
+      { label: "Vite — Guía", url: "https://vitejs.dev/guide/" }
     ],
-    startPrompt: "Explícame cómo eliminar un elemento de un array en JavaScript (splice o filter) con un ejemplo. Guíame para agregar un botón 'Quitar' a cada plato del carrito y recalcular el total al quitarlo.",
+    startPrompt: "Guíame para crear un proyecto nuevo con Vite + React (npm create vite). Explícame la estructura de carpetas y qué es un componente, con un ejemplo simple. Ayúdame a hacer mi primer componente para Triple 7 (un encabezado).",
     tasks: [
-      "Agregar un botón 'Quitar' por cada plato en el carrito",
-      "Eliminar ese plato del array al hacer clic",
-      "Confirmar que el total se recalcula bien al quitar"
+      "Crear el proyecto con Vite + React y ejecutarlo",
+      "Entender la estructura (src, componentes)",
+      "Crear tu primer componente (encabezado Triple 7)"
     ]
   },
   {
-    title: "Guardar el carrito (localStorage)",
-    goal: "El carrito no se borra al recargar la página.",
-    explain: "localStorage guarda datos en el navegador aunque cierres la página. Solo guarda texto, así que se usa JSON.stringify para guardar y JSON.parse para volver a leer. Hoy haces que tu carrito sobreviva a la recarga.",
+    title: "Fase 0 — Crear Supabase y conectarlo",
+    goal: "Tener un proyecto Supabase y conectarlo a tu app React de forma segura.",
+    explain: "Supabase será el cerebro del sistema (base de datos, login, archivos, tiempo real). Hoy creas el proyecto y conectas las claves con variables de entorno (.env) para no exponer secretos.",
     resources: [
-      { label: "MDN — localStorage", url: "https://developer.mozilla.org/es/docs/Web/API/Window/localStorage" }
+      { label: "Supabase — Documentación", url: "https://supabase.com/docs" },
+      { label: "Supabase — Inicio con React", url: "https://supabase.com/docs/guides/getting-started/quickstarts/reactjs" }
     ],
-    startPrompt: "Explícame qué es localStorage y cómo usar JSON.stringify y JSON.parse para guardar y recuperar un array, con un ejemplo. Guíame para que mi carrito se guarde en localStorage y no se borre al recargar la página.",
+    startPrompt: "Guíame para crear un proyecto en Supabase, obtener la URL y la anon key, y conectarlas a mi app React (Vite) usando un archivo .env sin exponer claves en el código. Explícame qué clave es pública y cuál NUNCA debe ir al frontend.",
     tasks: [
-      "Investigar qué es localStorage en 10 minutos",
-      "Guardar el carrito ahí cada vez que cambie",
-      "Recargar la página y confirmar que el carrito no se borra"
+      "Crear el proyecto en Supabase",
+      "Guardar las claves en .env y conectar el cliente de Supabase",
+      "Confirmar la conexión con una consulta de prueba"
     ]
   },
   {
-    title: "Pulir el proyecto",
-    goal: "El proyecto está limpio: el flujo completo funciona, los nombres son claros y no hay console.logs de prueba.",
-    explain: "Pulir es tan importante como programar. Hoy revisas el flujo completo (ver menú → agregar → ver total), renombras variables confusas para que se entiendan, y quitas los console.log que ya no sirven. Código limpio = más fácil de mantener y de entender mañana.",
+    title: "Fase 0 — Diseñar la base de datos",
+    goal: "Crear las tablas: users, roles, menu_items, orders, order_items, payments, tables, reservations.",
+    explain: "Antes de programar funciones, diseñas DÓNDE vive cada dato y cómo se relacionan (ej. un pedido tiene varios order_items). Un buen modelo evita dolores enormes después.",
     resources: [
-      { label: "MDN — Qué hacer cuando algo falla", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps/What_went_wrong" }
+      { label: "Supabase — Tablas", url: "https://supabase.com/docs/guides/database/tables" },
+      { label: "Supabase — Relaciones y joins", url: "https://supabase.com/docs/guides/database/joins-and-nesting" }
     ],
-    startPrompt: "Revisa conmigo mi proyecto: te voy a pegar mi código. Dime qué nombres de variables podrían ser más claros, qué console.log sobran, y si el flujo (ver menú → agregar → total) tiene algún error. Dame sugerencias concretas, pero deja que yo haga los cambios.",
+    startPrompt: "Ayúdame a diseñar en Supabase las tablas para el restaurante (users, roles, menu_items, orders, order_items, payments, tables, reservations). Explícame las relaciones (claves foráneas) y propón columnas. Quiero entenderlo, no solo copiarlo.",
     tasks: [
-      "Revisar todo el flujo: ver menú → agregar → ver total",
-      "Corregir nombres de variables confusos",
-      "Quitar console.logs de prueba que ya no sirvan"
+      "Crear las tablas principales en Supabase",
+      "Definir relaciones (ej. order_items -> orders)",
+      "Cargar 2-3 platos de prueba en menu_items"
     ]
   },
   {
-    title: "Confirmar pedido",
-    goal: "Hay un botón 'Confirmar pedido' que muestra un resumen y vacía el carrito.",
-    explain: "El cierre del proyecto: un botón que muestra un resumen final del pedido (platos + total) y luego vacía el carrito para empezar de nuevo. Aquí juntas todo lo aprendido: eventos, arrays, mostrar en pantalla y reiniciar el estado. ¡Felicidades por llegar hasta aquí!",
+    title: "Fase 1 — Registro e inicio de sesión",
+    goal: "Que un cliente pueda registrarse e iniciar sesión (Supabase Auth).",
+    explain: "Auth maneja las contraseñas de forma segura por ti (nunca guardas contraseñas en texto). Hoy implementas registro/login, la base para identificar a clientes y staff.",
     resources: [
-      { label: "MDN — Eventos (clics)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Events" }
+      { label: "Supabase — Autenticación", url: "https://supabase.com/docs/guides/auth" }
     ],
-    startPrompt: "Guíame para crear un botón 'Confirmar pedido' que muestre un resumen final (lista de platos y total) en pantalla y luego vacíe el carrito. Explícame cómo limpiar un array y actualizar la pantalla. Deja que yo escriba el código.",
+    startPrompt: "Guíame para implementar registro e inicio de sesión con Supabase Auth en mi app React: formulario, crear usuario, iniciar y cerrar sesión. Explícame cómo sé si hay un usuario conectado.",
     tasks: [
-      "Crear un botón 'Confirmar pedido'",
-      "Mostrar un resumen final del pedido en pantalla",
-      "Vaciar el carrito después de confirmar"
+      "Crear pantallas de registro e inicio de sesión",
+      "Conectar con Supabase Auth (signUp / signIn)",
+      "Mostrar/ocultar contenido según haya sesión"
+    ]
+  },
+  {
+    title: "Fase 1 — Roles y permisos (RBAC)",
+    goal: "Asignar un rol a cada usuario y mostrar la interfaz correcta por rol.",
+    explain: "RBAC = control de acceso por rol. Cada usuario tiene un rol (cliente, mesero, cocina, caja, gerente) y ve su propia interfaz. Hoy guardas el rol y rediriges a la vista correcta tras iniciar sesión.",
+    resources: [
+      { label: "Supabase — Autenticación", url: "https://supabase.com/docs/guides/auth" },
+      { label: "Supabase — Seguridad por filas (RLS)", url: "https://supabase.com/docs/guides/database/postgres/row-level-security" }
+    ],
+    startPrompt: "Quiero roles (cliente, mesero, cocina, caja, gerente) sobre Supabase. Guíame para guardar el rol del usuario y, según su rol, mostrar su panel. Explícame por qué el rol NO debe decidirse solo en el navegador.",
+    tasks: [
+      "Agregar rol a cada usuario (tabla users/roles)",
+      "Redirigir a cada rol a su panel tras el login",
+      "Crear las 5 pantallas vacías por rol"
+    ]
+  },
+  {
+    title: "Fase 1 — Seguridad real con RLS",
+    goal: "Activar Row Level Security para que cada rol solo acceda a lo que le corresponde.",
+    explain: "RLS son reglas EN la base de datos que deciden quién puede leer/escribir cada fila. Es LA seguridad de verdad (no basta esconder botones). Sin RLS, cualquiera podría leer pedidos o cambiar precios.",
+    resources: [
+      { label: "Supabase — Seguridad por filas (RLS)", url: "https://supabase.com/docs/guides/database/postgres/row-level-security" }
+    ],
+    startPrompt: "Explícame qué es Row Level Security en Supabase y por qué es crítico. Guíame para escribir políticas RLS: el cliente solo ve SUS pedidos; solo el gerente edita el menú; cocina/caja leen pedidos pero no cambian precios. Quiero entender cada política.",
+    tasks: [
+      "Activar RLS en todas las tablas",
+      "Escribir políticas por rol (leer/escribir)",
+      "Probar que un rol no puede ver datos de otro"
+    ]
+  },
+  {
+    title: "Fase 2 — Panel del gerente: menú (CRUD)",
+    goal: "El gerente puede crear, editar, borrar platos y ajustar precios.",
+    explain: "CRUD = Crear, Leer, Actualizar, Borrar. Hoy el gerente gestiona el menú real desde su panel, guardado en Supabase. Los precios los define SOLO el gerente (protegido por RLS).",
+    resources: [
+      { label: "Supabase — Consultas (select/insert)", url: "https://supabase.com/docs/reference/javascript/select" }
+    ],
+    startPrompt: "Guíame para hacer el panel del gerente en React donde pueda crear, editar y borrar platos del menú en Supabase (CRUD), incluyendo precio y categoría. Explícame cada operación (insert, update, delete).",
+    tasks: [
+      "Listar platos desde Supabase",
+      "Formulario para crear/editar plato (con precio)",
+      "Botón para borrar plato (con confirmación)"
+    ]
+  },
+  {
+    title: "Fase 2 — El cliente ve el menú",
+    goal: "Mostrar el menú en línea al cliente (categorías, fotos, precios) leyendo de Supabase.",
+    explain: "La interfaz del cliente es la principal del sitio. Hoy muestra el menú real (lo que cargó el gerente), organizado por categorías y con el estilo Triple 7.",
+    resources: [
+      { label: "Supabase — Consultas (select)", url: "https://supabase.com/docs/reference/javascript/select" },
+      { label: "React — Renderizar listas", url: "https://es.react.dev/learn/rendering-lists" }
+    ],
+    startPrompt: "Guíame para que la interfaz del cliente lea el menú desde Supabase y lo muestre por categorías, con foto, nombre y precio, usando el tema Triple 7. Explícame cómo traer los datos al cargar la página.",
+    tasks: [
+      "Traer el menú desde Supabase",
+      "Mostrarlo por categorías con tarjetas",
+      "Aplicar el estilo retro-aviación"
+    ]
+  },
+  {
+    title: "Fase 3 — El carrito",
+    goal: "El cliente agrega/quita platos, cambia cantidades y ve el subtotal.",
+    explain: "El carrito guarda lo que el cliente quiere pedir antes de confirmar. Hoy manejas el estado del carrito en React (agregar, quitar, cantidades) y muestras el subtotal.",
+    resources: [
+      { label: "React — El estado (useState)", url: "https://es.react.dev/learn/state-a-components-memory" }
+    ],
+    startPrompt: "Guíame para crear un carrito en React con useState: agregar platos, cambiar cantidad, quitar y mostrar el subtotal. Explícame qué es el 'estado' y por qué la pantalla se actualiza sola.",
+    tasks: [
+      "Agregar platos al carrito desde el menú",
+      "Cambiar cantidades y quitar platos",
+      "Mostrar el subtotal actualizado"
+    ]
+  },
+  {
+    title: "Fase 3 — Personalización y notas",
+    goal: "Permitir opciones por plato (ej. 4 con salsa A, 4 con salsa B) y notas especiales.",
+    explain: "Aquí resuelves tu caso clave: que el cliente personalice (cantidades por salsa, sin cebolla, término de la carne...). Estas indicaciones viajan con el pedido hasta cocina.",
+    resources: [
+      { label: "React — Reaccionar a la entrada", url: "https://es.react.dev/learn/reacting-to-input-with-state" }
+    ],
+    startPrompt: "Guíame para agregar opciones y notas por plato en el carrito: por ejemplo elegir '4 con salsa A y 4 con salsa B' y una nota libre. Explícame cómo guardar esas opciones junto al ítem del pedido.",
+    tasks: [
+      "Definir opciones por plato (ej. salsas con cantidades)",
+      "Permitir una nota libre por ítem",
+      "Ver las opciones reflejadas en el carrito"
+    ]
+  },
+  {
+    title: "Fase 3 — Crear el pedido (total seguro)",
+    goal: "Elegir tipo (comer aquí / llevar / recoger / reservar) y enviar el pedido con el total validado en el servidor.",
+    explain: "Hoy se crea la orden real en Supabase. CLAVE de seguridad: el total NO se confía del navegador; se recalcula en el servidor (Edge Function o lógica del backend) con los precios reales, para que nadie pague menos manipulando el código.",
+    resources: [
+      { label: "Supabase — Edge Functions", url: "https://supabase.com/docs/guides/functions" },
+      { label: "Supabase — Insertar datos", url: "https://supabase.com/docs/reference/javascript/insert" }
+    ],
+    startPrompt: "Guíame para crear el pedido en Supabase con su tipo (comer aquí, llevar, recoger, reservar) y sus ítems. MUY importante: explícame cómo calcular y validar el total en el SERVIDOR (no en el navegador) para que no se pueda manipular el precio.",
+    tasks: [
+      "Elegir el tipo de pedido",
+      "Insertar el pedido y sus order_items",
+      "Recalcular/validar el total en el servidor"
+    ]
+  },
+  {
+    title: "Fase 4 — Cocina en tiempo real (KDS)",
+    goal: "Pantalla de cocina que muestra los pedidos entrantes al instante.",
+    explain: "El KDS (Kitchen Display System) es la pantalla de cocina. Con Supabase Realtime, cada pedido nuevo aparece solo, sin recargar. Aquí brilla el tiempo real.",
+    resources: [
+      { label: "Supabase — Realtime (tiempo real)", url: "https://supabase.com/docs/guides/realtime" }
+    ],
+    startPrompt: "Guíame para hacer la pantalla de cocina en React que escuche en tiempo real los pedidos nuevos de Supabase (Realtime) y los muestre como tarjetas. Explícame cómo me suscribo a los cambios y, importante, cómo NO escuchar todo el historial para no gastar de más.",
+    tasks: [
+      "Suscribirse a pedidos activos con Supabase Realtime",
+      "Mostrar cada pedido entrante como tarjeta",
+      "Limitar la escucha a pedidos de hoy/activos"
+    ]
+  },
+  {
+    title: "Fase 4 — Estados del pedido y notas",
+    goal: "Cocina marca En preparación / Listo / Entregado y ve las notas especiales.",
+    explain: "El pedido avanza por estados. Cocina cambia el estado y todos (cliente, caja, mesero) lo ven al instante. Y aquí se leen las indicaciones especiales del cliente.",
+    resources: [
+      { label: "Supabase — Actualizar datos", url: "https://supabase.com/docs/reference/javascript/update" },
+      { label: "Supabase — Realtime", url: "https://supabase.com/docs/guides/realtime" }
+    ],
+    startPrompt: "Guíame para que cocina cambie el estado de un pedido (en preparación, listo, entregado) y que ese cambio se vea en tiempo real en las otras pantallas. Muéstrame también cómo mostrar las notas especiales del cliente en la tarjeta.",
+    tasks: [
+      "Botones de estado en cada pedido",
+      "Actualizar el estado en Supabase",
+      "Mostrar las notas especiales del cliente"
+    ]
+  },
+  {
+    title: "Fase 5 — El mesero toma órdenes",
+    goal: "El mesero crea/edita pedidos desde su móvil y los envía a cocina.",
+    explain: "El mesero usa una versión móvil para tomar la orden en la mesa y mandarla a cocina (reutiliza el carrito y el menú). Puede editar antes de enviar.",
+    resources: [
+      { label: "React — Aprende", url: "https://es.react.dev/learn" },
+      { label: "Supabase — Insertar/actualizar", url: "https://supabase.com/docs/reference/javascript/insert" }
+    ],
+    startPrompt: "Guíame para la interfaz del mesero (pensada para móvil): elegir mesa, armar el pedido con el menú, editarlo y enviarlo a cocina (que aparezca en el KDS en tiempo real). Reutiliza lo del carrito si se puede.",
+    tasks: [
+      "Vista móvil del mesero con selección de mesa",
+      "Armar y editar el pedido",
+      "Enviar a cocina (aparece en el KDS)"
+    ]
+  },
+  {
+    title: "Fase 6 — Métodos de pago y cuentas",
+    goal: "Mostrar las opciones de pago y las cuentas bancarias (que gestiona el gerente).",
+    explain: "Triple 7 acepta varios métodos: efectivo, transferencia, tarjeta y billetera digital. Hoy muestras las opciones y las cuentas bancarias para transferencia (editables por el gerente).",
+    resources: [
+      { label: "Supabase — Consultas (select/insert)", url: "https://supabase.com/docs/reference/javascript/select" }
+    ],
+    startPrompt: "Guíame para mostrar al cliente los métodos de pago (efectivo, transferencia, tarjeta, billetera) y, para transferencia, las cuentas bancarias guardadas en Supabase y editables por el gerente. Explícame cómo estructurarlo.",
+    tasks: [
+      "Tabla de cuentas bancarias editable por el gerente",
+      "Mostrar los métodos de pago al cliente",
+      "Elegir método al confirmar el pedido"
+    ]
+  },
+  {
+    title: "Fase 6 — Subir comprobante (seguro y liviano)",
+    goal: "El cliente sube su comprobante de transferencia, comprimido y validado.",
+    explain: "Para transferencias, el cliente sube una foto del comprobante a Supabase Storage. CLAVE: validar tipo/tamaño de archivo y COMPRIMIR la imagen en el navegador (~150 KB) para no inflar el costo (esto te mantiene en los ~$25/mes).",
+    resources: [
+      { label: "Supabase — Storage (archivos)", url: "https://supabase.com/docs/guides/storage" }
+    ],
+    startPrompt: "Guíame para subir el comprobante de pago a Supabase Storage desde React: validar que sea imagen y no muy pesada, COMPRIMIRLA en el navegador antes de subir (~150 KB) y guardar el enlace en el pedido. Explícame cada paso de seguridad.",
+    tasks: [
+      "Subir una imagen a Supabase Storage",
+      "Validar tipo y tamaño + comprimir antes de subir",
+      "Guardar el enlace del comprobante en el pedido"
+    ]
+  },
+  {
+    title: "Fase 6 — Caja: verificar y liberar",
+    goal: "Caja ve pagos pendientes, revisa el comprobante, confirma y libera el pedido.",
+    explain: "La caja es el control de calidad del pago. Ve los pedidos pendientes, abre el comprobante y confirma (o rechaza). Solo con el pago confirmado el pedido avanza. El estado se muestra al cliente.",
+    resources: [
+      { label: "Supabase — Consultar/actualizar", url: "https://supabase.com/docs/reference/javascript/update" },
+      { label: "Supabase — Realtime", url: "https://supabase.com/docs/guides/realtime" }
+    ],
+    startPrompt: "Guíame para la vista de caja: listar pedidos pendientes de pago, ver el comprobante subido y confirmar o rechazar el pago. Al confirmar, el pedido se libera y el cliente ve el nuevo estado en tiempo real.",
+    tasks: [
+      "Listar pedidos pendientes de pago",
+      "Ver el comprobante y confirmar/rechazar",
+      "Liberar el pedido y actualizar el estado al cliente"
+    ]
+  },
+  {
+    title: "Fase 6 — Seguridad de pagos",
+    goal: "Evitar doble pago/duplicados, registrar auditoría e integrar pasarela (tarjeta/billetera).",
+    explain: "Pagos = máxima cautela. Hoy proteges contra doble pago y pedidos duplicados, guardas un registro de auditoría (quién confirmó qué y cuándo) e integras una pasarela (Stripe/Mercado Pago) con checkout alojado para tarjeta/billetera — SIN guardar datos de tarjeta.",
+    resources: [
+      { label: "Stripe — Checkout alojado", url: "https://stripe.com/docs/payments/checkout" },
+      { label: "Mercado Pago — Desarrolladores", url: "https://www.mercadopago.com/developers/es/docs" }
+    ],
+    startPrompt: "Guíame para: 1) evitar pagos/pedidos duplicados, 2) crear una tabla de auditoría (quién confirmó cada pago y cuándo), y 3) integrar una pasarela (Stripe o Mercado Pago) con checkout alojado para tarjeta/billetera, SIN guardar datos de tarjeta. Explícame los riesgos.",
+    tasks: [
+      "Proteger contra doble pago / pedidos duplicados",
+      "Registrar auditoría de caja y admin",
+      "Integrar pasarela (checkout alojado) para tarjeta/billetera"
+    ]
+  },
+  {
+    title: "Fase 7 — Reservas (mesa + comida)",
+    goal: "El cliente reserva mesa y deja la comida pedida con anticipación.",
+    explain: "Reservar = elegir fecha/hora, número de personas y (opcional) dejar el pedido listo para tenerlo a la llegada. Usa las tablas tables y reservations.",
+    resources: [
+      { label: "Supabase — Tablas e inserción", url: "https://supabase.com/docs/guides/database/tables" }
+    ],
+    startPrompt: "Guíame para crear reservas: el cliente elige fecha, hora y número de personas, ve mesas disponibles y, si quiere, deja su pedido anticipado. Explícame cómo evitar reservar una mesa ya ocupada a esa hora.",
+    tasks: [
+      "Formulario de reserva (fecha, hora, personas)",
+      "Mostrar mesas disponibles y reservar",
+      "Permitir pedido anticipado junto a la reserva"
+    ]
+  },
+  {
+    title: "Fase 8 — Usuarios y accesos por rol",
+    goal: "El gerente gestiona usuarios, asigna roles y controla los accesos de cada panel.",
+    explain: "El admin general controla quién entra y como qué. Hoy: crear/editar usuarios, asignar rol y activar/desactivar. El acceso lo protegen Auth + RLS, no un enlace secreto.",
+    resources: [
+      { label: "Supabase — Auth", url: "https://supabase.com/docs/guides/auth" },
+      { label: "Supabase — RLS", url: "https://supabase.com/docs/guides/database/postgres/row-level-security" }
+    ],
+    startPrompt: "Guíame para el panel del gerente donde gestione usuarios: crear, asignar rol (mesero, cocina, caja) y activar/desactivar. Explícame cómo se entrega el acceso a cada panel de forma segura (con login y rol, no con un enlace secreto).",
+    tasks: [
+      "Listar y crear usuarios desde el panel admin",
+      "Asignar/cambiar rol y activar/desactivar",
+      "Verificar que cada rol entra a su panel"
+    ]
+  },
+  {
+    title: "Fase 8 — Reportes y monitoreo",
+    goal: "Ver ventas (día/semana) y un monitoreo en vivo de la operación.",
+    explain: "El gerente necesita números: ventas por día, platos más pedidos y un tablero en vivo de pedidos por estado. Hoy creas reportes simples leyendo de Supabase.",
+    resources: [
+      { label: "Supabase — Joins y agregaciones", url: "https://supabase.com/docs/guides/database/joins-and-nesting" }
+    ],
+    startPrompt: "Guíame para crear reportes para el gerente: total de ventas por día, platos más vendidos y un tablero en vivo con cuántos pedidos hay en cada estado. Explícame cómo sumar/agrupar datos en Supabase.",
+    tasks: [
+      "Reporte de ventas por día",
+      "Top de platos más pedidos",
+      "Tablero en vivo de pedidos por estado"
+    ]
+  },
+  {
+    title: "Fase 9 — Repaso de seguridad",
+    goal: "Revisar de punta a punta que el sistema sea seguro antes de lanzar.",
+    explain: "Antes de abrir al público repasas: claves/secretos fuera del código, RLS en todas las tablas, validación en el servidor y que nadie acceda a lo ajeno. Con pagos de por medio, esto no es opcional.",
+    resources: [
+      { label: "Supabase — RLS", url: "https://supabase.com/docs/guides/database/postgres/row-level-security" },
+      { label: "Supabase — Pasar a producción", url: "https://supabase.com/docs/guides/platform/going-into-prod" }
+    ],
+    startPrompt: "Ayúdame a hacer una revisión de seguridad de Triple 7: revisa que las claves no estén expuestas, que TODAS las tablas tengan RLS correcto, que los totales se validen en el servidor y que cada rol no acceda a datos ajenos. Dame una checklist.",
+    tasks: [
+      "Revisar claves/secretos y .env",
+      "Auditar el RLS de todas las tablas",
+      "Confirmar validación de totales y pagos en el servidor"
+    ]
+  },
+  {
+    title: "Fase 9 — PWA y pulido Triple 7",
+    goal: "Hacer la app instalable (PWA) y dejar la interfaz coherente y pulida.",
+    explain: "Una PWA se instala como app desde el navegador (como ya hiciste en esta bitácora). Hoy lo aplicas al sistema y pules el estilo retro-aviación: consistencia, animaciones suaves, detalles.",
+    resources: [
+      { label: "MDN — Progressive Web Apps", url: "https://developer.mozilla.org/es/docs/Web/Progressive_web_apps" },
+      { label: "Vite PWA", url: "https://vite-pwa-org.netlify.app/" }
+    ],
+    startPrompt: "Guíame para convertir mi app React+Vite en PWA instalable (manifest + service worker) y para pulir el estilo Triple 7 (aeropuerto retro: azul oscuro, dorado, blanco, animaciones suaves). Dame consejos de consistencia visual.",
+    tasks: [
+      "Agregar manifest e ícono y hacerla instalable",
+      "Pulir colores, tipografía y animaciones",
+      "Revisar que se vea bien en móvil y PC"
+    ]
+  },
+  {
+    title: "Fase 9 — Despliegue y lanzamiento",
+    goal: "Publicar el sistema, probarlo con datos reales y completar el checklist de lanzamiento.",
+    explain: "El gran día: despliegas el frontend (Vercel/Netlify), confirmas que Supabase está en modo producción y haces pruebas reales con cada rol. ¡Triple 7 despega! 🛫",
+    resources: [
+      { label: "Vercel — Documentación", url: "https://vercel.com/docs" },
+      { label: "Supabase — Pasar a producción", url: "https://supabase.com/docs/guides/platform/going-into-prod" }
+    ],
+    startPrompt: "Guíame para desplegar mi app React+Vite (por ejemplo en Vercel o Netlify) conectada a Supabase en producción. Dame un checklist final de lanzamiento y ayúdame a probar el flujo completo con cada rol (cliente, mesero, cocina, caja, gerente).",
+    tasks: [
+      "Desplegar el frontend (Vercel/Netlify)",
+      "Pasar Supabase a configuración de producción",
+      "Probar el flujo completo con cada rol"
     ]
   },
 ];
@@ -547,7 +815,7 @@ let unsub = null;      // función para cancelar la escucha en tiempo real
 let pushTimer = null;  // temporizador para no escribir en la nube a cada tecla
 
 function defaultState(){
-  const t = new Date(); t.setDate(t.getDate() + 1); // empieza mañana
+  const t = new Date(); // el plan empieza hoy (Día 1 disponible al instante)
   t.setHours(0,0,0,0);
   return {
     startDate: t.toISOString(),
