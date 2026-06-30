@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bitácora del Proyecto — Sistema Restaurante</title>
+<meta name="theme-color" content="#C1432F">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2EDE4;
+    --paper-dark:#E8E0D2;
+    --ink:#2B2620;
+    --muted:#8A8170;
+    --accent:#C1432F;
+    --accent-dim:#E2A89D;
+    --good:#5B7553;
+    --good-dim:#C9D6C3;
+    --shadow: 0 2px 0 rgba(43,38,32,0.05), 0 8px 24px -8px rgba(43,38,32,0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      repeating-linear-gradient(0deg, transparent 0 38px, rgba(138,129,112,0.06) 38px 39px),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  header{
+    position:sticky; top:0; z-index:20;
+    background:var(--paper);
+    border-bottom:2px solid var(--ink);
+    padding:18px 20px 14px;
+  }
+  header .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  header h1{
+    margin:2px 0 0; font-size:22px; line-height:1.2; font-weight:700;
+  }
+
+  .stats{
+    display:flex; gap:10px; margin:14px 20px 0; flex-wrap:wrap;
+  }
+  .stat{
+    flex:1; min-width:90px;
+    background:#fff; border:1.5px solid var(--ink);
+    border-radius:10px; padding:10px 12px;
+    box-shadow:var(--shadow);
+  }
+  .stat .label{font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .stat .value{font-size:24px; font-weight:700; margin-top:2px; display:flex; align-items:baseline; gap:4px;}
+  .stat.streak .value{color:var(--accent);}
+  .stat.streak .value.off{color:var(--muted);}
+  .stat.points .value{color:var(--good);}
+
+  #alertBanner{
+    margin:14px 20px 0; padding:12px 14px;
+    background:#fff; border:1.5px dashed var(--accent); border-radius:10px;
+    font-size:13.5px; line-height:1.45; display:none;
+  }
+  #alertBanner b{color:var(--accent);}
+
+  .progressWrap{margin:16px 20px 0;}
+  .progressBar{height:8px; background:var(--paper-dark); border:1px solid var(--ink); border-radius:6px; overflow:hidden;}
+  .progressFill{height:100%; background:var(--good); width:0%; transition:width .4s ease;}
+  .progressLabel{font-size:11px; color:var(--muted); margin-top:5px; font-family:'JetBrains Mono',monospace;}
+
+  main{padding:18px 20px 40px; max-width:600px; margin:0 auto;}
+
+  .ticket{
+    position:relative;
+    background:#fff;
+    border:1.5px solid var(--ink);
+    border-radius:2px;
+    margin-bottom:22px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .ticket::before, .ticket::after{
+    content:""; position:absolute; left:0; right:0; height:10px;
+    background-image: radial-gradient(circle at 8px 5px, transparent 5px, #fff 5.5px);
+    background-size: 16px 10px; background-repeat:repeat-x;
+  }
+  .ticket::before{ top:-5px; }
+  .ticket::after{ bottom:-5px; transform:rotate(180deg); }
+
+  .ticket.locked{opacity:.55;}
+  .ticket.today{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-dim), var(--shadow);}
+  .ticket.done .ticketHead{background:var(--good-dim);}
+
+  .ticketHead{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px 10px; border-bottom:1px dashed var(--muted);
+    cursor:pointer; gap:10px;
+  }
+  .ticketHead .dayMeta{display:flex; flex-direction:column; gap:2px;}
+  .ticketHead .dayNum{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase;}
+  .ticketHead .dayTitle{font-weight:700; font-size:16px;}
+  .ticketHead .dayDate{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);}
+  .badge{
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+    padding:4px 8px; border-radius:20px; border:1px solid currentColor; white-space:nowrap;
+  }
+  .badge.hoy{color:var(--accent);}
+  .badge.cumplido{color:var(--good);}
+  .badge.bloqueado{color:var(--muted);}
+  .badge.pendiente{color:var(--muted);}
+
+  .ticketBody{padding:0 16px 16px; display:none;}
+  .ticket.open .ticketBody{display:block;}
+
+  .taskList{list-style:none; margin:12px 0 0; padding:0;}
+  .taskItem{
+    display:flex; align-items:flex-start; gap:10px; padding:7px 0;
+    border-bottom:1px dotted #e3dccd; font-size:14px; line-height:1.4;
+  }
+  .taskItem:last-child{border-bottom:none;}
+  .taskItem input[type=checkbox]{
+    margin-top:3px; width:17px; height:17px; accent-color:var(--good); cursor:pointer; flex-shrink:0;
+  }
+  .taskItem.checked label{ text-decoration:line-through; color:var(--muted); }
+
+  .noteWrap{margin-top:14px;}
+  .noteWrap label{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;}
+  textarea{
+    width:100%; min-height:60px; resize:vertical;
+    border:1px solid var(--ink); border-radius:6px; padding:8px 10px;
+    font-family:'Inter',sans-serif; font-size:13.5px; background:var(--paper);
+    color:var(--ink);
+  }
+  textarea:focus{outline:2px solid var(--accent); outline-offset:1px;}
+
+  .ticketActions{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+  button{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.04em;
+    border:1.5px solid var(--ink); border-radius:7px; padding:9px 14px;
+    background:#fff; color:var(--ink); cursor:pointer;
+  }
+  button:active{transform:translateY(1px);}
+  button.primary{background:var(--accent); color:#fff; border-color:var(--accent);}
+  button.primary:disabled{background:var(--good-dim); color:var(--muted); border-color:var(--muted); cursor:not-allowed;}
+  button:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  .lockNote{font-size:12px; color:var(--muted); margin-top:8px; font-style:italic;}
+
+  #installBtn{
+    position:fixed; bottom:18px; right:18px; z-index:30;
+    display:none; align-items:center; gap:8px;
+    background:var(--ink); color:#fff; border:none; border-radius:30px;
+    padding:12px 18px; box-shadow:0 8px 20px rgba(0,0,0,.25); font-size:13px;
+  }
+
+  .syncRow{display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap;}
+  .syncStatus{font-size:11px; color:var(--muted); letter-spacing:.04em;}
+  .syncStatus.ok{color:var(--good);}
+  .syncStatus.warn{color:var(--accent);}
+  .syncBtn{padding:6px 12px; font-size:11px; border-radius:20px;}
+
+  .modalOverlay{
+    position:fixed; inset:0; z-index:50;
+    background:rgba(43,38,32,.55);
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .modalOverlay[hidden]{display:none;}
+  .modalCard{
+    background:var(--paper); border:2px solid var(--ink); border-radius:12px;
+    max-width:420px; width:100%; padding:22px 20px; box-shadow:var(--shadow);
+  }
+  .modalCard h2{margin:0 0 10px; font-size:18px; line-height:1.25;}
+  .modalCard p{font-size:13.5px; line-height:1.5; margin:0 0 12px;}
+  .modalCard input{
+    width:100%; border:1.5px solid var(--ink); border-radius:8px; padding:10px 12px;
+    font-family:'JetBrains Mono',monospace; font-size:14px; background:#fff; color:var(--ink);
+  }
+  .modalCard input:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .codeError{color:var(--accent); font-size:12px; margin:8px 0 0;}
+  .codeError[hidden]{display:none;}
+  .modalActions{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;}
+  .modalActions .primary{flex:1;}
+
+  /* ---- contenido enriquecido por día ---- */
+  .dayGoal{
+    background:var(--good-dim); border:1px solid var(--good); border-radius:8px;
+    padding:9px 11px; font-size:13.5px; line-height:1.45; margin-top:12px;
+  }
+  .sectionLabel{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted); margin:18px 0 6px;
+  }
+  .learnBox{
+    margin-top:12px; border:1px dashed var(--muted); border-radius:8px;
+    padding:0 12px; background:#fff;
+  }
+  .learnBox summary{
+    cursor:pointer; padding:11px 0; font-weight:600; font-size:14px; list-style:none;
+  }
+  .learnBox summary::-webkit-details-marker{display:none;}
+  .learnBox summary::before{content:'▸ '; color:var(--accent);}
+  .learnBox[open] summary::before{content:'▾ ';}
+  .learnBox p{font-size:13.5px; line-height:1.55; margin:0 0 10px;}
+  .resList{display:flex; flex-direction:column; gap:7px; padding-bottom:12px;}
+  .resList a{color:var(--accent); font-size:13px; text-decoration:none;}
+  .resList a:hover{text-decoration:underline;}
+
+  .promptBox{
+    margin-top:14px; border:1.5px solid var(--ink); border-radius:8px;
+    overflow:hidden; background:#fff;
+  }
+  .promptHead{
+    background:var(--ink); color:var(--paper);
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.03em;
+    padding:9px 12px; line-height:1.35;
+  }
+  .promptText{
+    margin:0; padding:12px; font-family:'JetBrains Mono',monospace; font-size:12.5px;
+    line-height:1.55; white-space:pre-wrap; word-break:break-word; color:var(--ink);
+    border-bottom:1px dashed #e3dccd;
+  }
+  .promptFoot{padding:10px 12px;}
+  .copyBtn{font-size:11px; padding:7px 12px;}
+
+  .closeBox{margin-top:18px; border-top:2px dashed var(--muted); padding-top:14px;}
+  .closeHint{font-size:12.5px; color:var(--muted); line-height:1.45; margin:0 0 10px;}
+  .stepLabel{
+    display:block; font-family:'JetBrains Mono',monospace; font-size:11px;
+    letter-spacing:.05em; color:var(--ink); font-weight:500; margin:12px 0 5px;
+  }
+  .codeArea, .evalArea{
+    width:100%; min-height:90px; resize:vertical;
+    border:1px solid var(--ink); border-radius:6px; padding:9px 11px;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.5;
+    background:#fbfaf6; color:var(--ink);
+  }
+  .codeArea:focus, .evalArea:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .evalPromptOut{
+    margin:10px 0 0; padding:11px; border:1px solid var(--muted); border-radius:6px;
+    background:#fbfaf6; font-family:'JetBrains Mono',monospace; font-size:12px;
+    line-height:1.55; white-space:pre-wrap; word-break:break-word;
+    max-height:240px; overflow:auto;
+  }
+  .verdictBadge{
+    font-family:'JetBrains Mono',monospace; font-size:12px; align-self:center; color:var(--muted);
+  }
+  .verdictBadge.ok{color:var(--good); font-weight:600;}
+  .verdictBadge.warn{color:var(--accent); font-weight:600;}
+
+  @media (prefers-reduced-motion: reduce){
+    .progressFill{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow mono">Sistema de Restaurante · Bitácora de avance</div>
+  <h1>Tu cuaderno de pedidos del aprendizaje</h1>
+  <div class="syncRow">
+    <span id="syncStatus" class="syncStatus mono">Sin conectar a la nube</span>
+    <button id="syncBtn" class="syncBtn mono">Conectar a la nube</button>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat streak">
+    <div class="label">Racha</div>
+    <div class="value" id="streakValue">0 <span style="font-size:14px;">🔥</span></div>
+  </div>
+  <div class="stat points">
+    <div class="label">Puntos</div>
+    <div class="value" id="pointsValue">0</div>
+  </div>
+  <div class="stat">
+    <div class="label">Día actual</div>
+    <div class="value" id="currentDayValue" style="font-size:20px;">—</div>
+  </div>
+</div>
+
+<div id="alertBanner"></div>
+
+<div class="progressWrap">
+  <div class="progressBar"><div class="progressFill" id="progressFill"></div></div>
+  <div class="progressLabel" id="progressLabel">0 / 0 días cumplidos</div>
+</div>
+
+<main id="ticketsContainer"></main>
+
+<button id="installBtn">⬇ Instalar app</button>
+
+<div id="codeModal" class="modalOverlay" hidden>
+  <div class="modalCard">
+    <h2>Guarda tu avance en la nube ☁️</h2>
+    <p>Crea un <b>PIN de 4 a 6 dígitos</b> (mejor 6). Úsalo en cualquier dispositivo para recuperar tu avance. <b>Apúntalo en un lugar seguro:</b> si lo olvidas, no se podrá recuperar.</p>
+    <p style="font-size:12px; color:var(--muted); margin:-6px 0 12px;">Evita PINs fáciles como 1234, 0000 o tu fecha de nacimiento.</p>
+    <input id="codeInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" placeholder="ej. 482913">
+    <p id="codeError" class="codeError" hidden></p>
+    <div class="modalActions">
+      <button id="codeConnect" class="primary">Conectar y guardar</button>
+      <button id="codeSkip">Seguir sin nube</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+/* ============== FIREBASE ============== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBe3AQ8yH8tJm5V-pWhRt5wnSljYGPxgFw",
+  authDomain: "nota-ab8bf.firebaseapp.com",
+  projectId: "nota-ab8bf",
+  storageBucket: "nota-ab8bf.firebasestorage.app",
+  messagingSenderId: "495368983985",
+  appId: "1:495368983985:web:82deb32eafd14f128a5990"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+
+/* ============== DATOS DEL PLAN (14 días) ============== */
+const PLAN = [
+  {
+    title: "Esqueleto del menú",
+    goal: "Tener un index.html que abra en el navegador y muestre el título y las 3 categorías del menú.",
+    explain: "HTML es el esqueleto de toda página web: define QUÉ cosas hay (títulos, textos, listas). Hoy creas el archivo base y escribes a mano las 3 categorías. Todavía sin estilos: solo la estructura. Lo importante es entender etiquetas como <h1>, <h2> y <p>, y que todo va dentro de <body>.",
+    resources: [
+      { label: "MDN — Introducción a HTML", url: "https://developer.mozilla.org/es/docs/Learn/HTML/Introduction_to_HTML/Getting_started" },
+      { label: "W3Schools — HTML básico", url: "https://www.w3schools.com/html/html_basic.asp" }
+    ],
+    startPrompt: "Soy principiante total. Explícame con palabras simples qué es un archivo HTML y para qué sirven las etiquetas <head>, <body>, <h1> y <h2>. NO me des el código completo todavía: guíame paso a paso para que YO escriba a mano el esqueleto de un menú de restaurante con 3 categorías (Entradas, Platos fuertes y Bebidas).",
+    tasks: [
+      "Crear el archivo index.html del proyecto restaurante",
+      "Agregar la estructura básica: head, body, título",
+      "Escribir a mano (sin IA) 3 categorías: Entradas, Platos fuertes, Bebidas"
+    ]
+  },
+  {
+    title: "Platos del menú",
+    goal: "Cada categoría tiene al menos 3 platos con nombre y precio, usando listas.",
+    explain: "Las listas (<ul> y <li>) sirven para mostrar varios elementos ordenados, perfectas para platos. Hoy llenas el menú con contenido real. Clave: cada etiqueta que abres (<li>) hay que cerrarla (</li>), o la página se ve rota.",
+    resources: [
+      { label: "MDN — Texto y listas en HTML", url: "https://developer.mozilla.org/es/docs/Learn/HTML/Introduction_to_HTML/HTML_text_fundamentals" },
+      { label: "W3Schools — Listas HTML", url: "https://www.w3schools.com/html/html_lists.asp" }
+    ],
+    startPrompt: "Explícame cómo funcionan las listas en HTML (<ul>, <ol>, <li>) con un ejemplo corto. Luego dame una guía (no la solución completa) para agregar 3 platos con su nombre y precio en cada categoría de mi menú.",
+    tasks: [
+      "Agregar 3 platos por categoría con nombre y precio",
+      "Usar listas o párrafos para ordenar la información",
+      "Revisar que el HTML cierre todas las etiquetas correctamente"
+    ]
+  },
+  {
+    title: "Estilos base (CSS)",
+    goal: "El menú tiene colores y tipografía propios; los títulos de categoría se ven distintos al texto normal.",
+    explain: "CSS es la 'ropa' de la página: colores, tamaños y fuentes. Se escribe en un archivo .css que enlazas con <link> dentro del <head>. Hoy aprendes selectores (a qué elemento aplicar estilo) y propiedades como color, background y font-family.",
+    resources: [
+      { label: "MDN — CSS: primeros pasos", url: "https://developer.mozilla.org/es/docs/Learn/CSS/First_steps" },
+      { label: "freeCodeCamp — Cursos en español", url: "https://www.freecodecamp.org/espanol/learn/" }
+    ],
+    startPrompt: "Explícame qué es CSS y cómo enlazar un archivo style.css a mi HTML con <link>. Muéstrame con un ejemplo simple cómo cambiar el color y la tipografía. Guíame para dar estilo a los títulos de las categorías de mi menú, sin darme todo el archivo hecho.",
+    tasks: [
+      "Crear el archivo style.css y enlazarlo al HTML",
+      "Definir colores y tipografía del restaurante",
+      "Darle estilo a los títulos de cada categoría"
+    ]
+  },
+  {
+    title: "Tarjetas de platos",
+    goal: "Cada plato se ve como una tarjeta con borde y sombra, acomodadas en fila con Flexbox.",
+    explain: "Una 'tarjeta' (card) es una caja con borde, espacio interno (padding) y sombra. Flexbox es la forma moderna de acomodar cajas en fila o columna. Hoy combinas ambos para que el menú se vea ordenado y profesional.",
+    resources: [
+      { label: "MDN — Flexbox", url: "https://developer.mozilla.org/es/docs/Learn/CSS/CSS_layout/Flexbox" },
+      { label: "CSS-Tricks — Guía de Flexbox", url: "https://css-tricks.com/snippets/css/a-guide-to-flexbox/" }
+    ],
+    startPrompt: "Explícame qué es Flexbox y para qué sirven display:flex, gap y flex-wrap, con un ejemplo mínimo. Luego guíame para convertir cada plato de mi menú en una tarjeta con borde, padding y sombra, acomodadas en fila.",
+    tasks: [
+      "Convertir cada plato en una tarjeta (card) con borde y sombra",
+      "Usar Flexbox para acomodar las tarjetas en fila",
+      "Probar cómo se ven con 6+ platos en pantalla"
+    ]
+  },
+  {
+    title: "Menú responsive",
+    goal: "El menú se ve bien tanto en computadora como en celular.",
+    explain: "Responsive significa que la página se adapta al tamaño de la pantalla. Se logra con 'media queries': reglas CSS que cambian el diseño cuando la pantalla es pequeña. Hoy haces que las tarjetas pasen de fila (en PC) a columna (en celular).",
+    resources: [
+      { label: "MDN — Diseño responsive", url: "https://developer.mozilla.org/es/docs/Learn/CSS/CSS_layout/Responsive_Design" },
+      { label: "W3Schools — Media queries", url: "https://www.w3schools.com/css/css_rwd_mediaqueries.asp" }
+    ],
+    startPrompt: "Explícame qué es el diseño responsive y cómo funcionan las media queries (@media) en CSS, con un ejemplo. Guíame para que las tarjetas de mi menú se pongan en una sola columna en pantallas de celular.",
+    tasks: [
+      "Hacer que las tarjetas se acomoden en columna en pantallas pequeñas",
+      "Probar el menú en el modo celular del navegador (F12)",
+      "Ajustar tamaños de texto para que se lea bien en móvil"
+    ]
+  },
+  {
+    title: "Imágenes y detalles",
+    goal: "Cada plato tiene una imagen o ícono y el menú se ve cuidado.",
+    explain: "La etiqueta <img> muestra imágenes; siempre lleva src (la ruta del archivo) y alt (texto que describe la imagen). Hoy agregas imágenes y revisas detalles: espacios, alineación y que todo se entienda. Mostrárselo a alguien ayuda a ver fallos que tú ya no notas.",
+    resources: [
+      { label: "MDN — Imágenes en HTML", url: "https://developer.mozilla.org/es/docs/Learn/HTML/Multimedia_and_embedding/Images_in_HTML" }
+    ],
+    startPrompt: "Explícame cómo usar la etiqueta <img> en HTML (src y alt) y cómo ajustar el tamaño de una imagen con CSS. Guíame para agregar una imagen o ícono a cada tarjeta de plato y mejorar el espaciado, sin hacerlo todo por mí.",
+    tasks: [
+      "Agregar una imagen o ícono a cada plato",
+      "Revisar espaciados y alineación general",
+      "Mostrarle el menú a alguien y anotar qué no se entiende"
+    ]
+  },
+  {
+    title: "JavaScript: primeros pasos",
+    goal: "Tienes un app.js enlazado que escribe en la consola y un botón que muestra una alerta.",
+    explain: "JavaScript le da vida a la página: reacciona a clics, cambia cosas y hace cálculos. Se enlaza con <script src='app.js'> al final del body. Hoy aprendes console.log (para ver mensajes en la consola del navegador, tecla F12) y a responder a un clic con addEventListener.",
+    resources: [
+      { label: "MDN — JavaScript: primeros pasos", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps/What_is_JavaScript" },
+      { label: "MDN — Eventos (clics)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Events" }
+    ],
+    startPrompt: "Soy principiante en JavaScript. Explícame qué es, cómo enlazar app.js a mi HTML, qué hace console.log y cómo hacer que un botón muestre una alerta al hacer clic. Dame ejemplos cortos y guíame; no me des el proyecto completo.",
+    tasks: [
+      "Crear el archivo app.js y enlazarlo al HTML",
+      "Mostrar un mensaje en consola al cargar la página",
+      "Hacer que un botón muestre una alerta al hacer clic"
+    ]
+  },
+  {
+    title: "Agregar al carrito (1 plato)",
+    goal: "Al hacer clic en 'Agregar', se guarda un plato y se muestra su nombre en pantalla.",
+    explain: "Hoy conectas un botón con una acción. Aprendes a guardar información en una variable y a cambiar el contenido de la página con JavaScript (textContent). Es el primer ladrillo del carrito de compras.",
+    resources: [
+      { label: "MDN — Variables", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps/Variables" },
+      { label: "MDN — Eventos (clics)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Events" }
+    ],
+    startPrompt: "Explícame cómo, al hacer clic en un botón, puedo guardar un dato en una variable y mostrarlo en la página con JavaScript (textContent). Dame un ejemplo simple y guíame para hacer un botón 'Agregar' que muestre el nombre del plato elegido.",
+    tasks: [
+      "Crear un botón 'Agregar' en una tarjeta de plato",
+      "Guardar ese plato en una variable al hacer clic",
+      "Mostrar en pantalla el nombre del plato agregado"
+    ]
+  },
+  {
+    title: "Carrito con varios platos",
+    goal: "Un array guarda todos los platos agregados y se muestra la lista completa.",
+    explain: "Un array es una lista de datos en JavaScript, por ejemplo ['Tacos','Agua']. Con .push() agregas elementos al final. Hoy haces que cada botón meta su plato al array y que la pantalla muestre toda la lista del carrito.",
+    resources: [
+      { label: "MDN — Arrays", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps/Arrays" }
+    ],
+    startPrompt: "Explícame qué es un array en JavaScript y cómo agregar elementos con push(), con un ejemplo corto. Guíame para crear un carrito (un array) donde cada botón 'Agregar' meta su plato, y para mostrar la lista completa en pantalla.",
+    tasks: [
+      "Crear un array vacío que representa el carrito",
+      "Hacer que cada botón 'Agregar' meta su plato al array",
+      "Mostrar en pantalla la lista completa del carrito"
+    ]
+  },
+  {
+    title: "Calcular el total",
+    goal: "El total en dinero se calcula sumando los precios del carrito y se actualiza solo.",
+    explain: "Para sumar todos los precios recorres el array con un bucle (for). Hoy muestras el total y haces que se actualice cada vez que agregas o quitas un plato. Cuida que los precios sean números para que la suma funcione.",
+    resources: [
+      { label: "MDN — Bucles (recorrer listas)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Looping_code" }
+    ],
+    startPrompt: "Explícame cómo recorrer un array con un bucle for y sumar valores, con un ejemplo. Guíame para sumar los precios de los platos de mi carrito y mostrar el total en pantalla, actualizado en tiempo real.",
+    tasks: [
+      "Recorrer el array del carrito y sumar los precios",
+      "Mostrar el total en pantalla, actualizado en tiempo real",
+      "Probar agregando y quitando platos para verificar la suma"
+    ]
+  },
+  {
+    title: "Quitar platos del carrito",
+    goal: "Cada plato del carrito tiene un botón 'Quitar' que lo elimina y recalcula el total.",
+    explain: "Para quitar un elemento de un array se usa splice() (por posición) o filter(). Hoy agregas un botón 'Quitar' por plato y te aseguras de que el total se vuelva a calcular bien después de eliminar.",
+    resources: [
+      { label: "MDN — Array.splice()", url: "https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/splice" }
+    ],
+    startPrompt: "Explícame cómo eliminar un elemento de un array en JavaScript (splice o filter) con un ejemplo. Guíame para agregar un botón 'Quitar' a cada plato del carrito y recalcular el total al quitarlo.",
+    tasks: [
+      "Agregar un botón 'Quitar' por cada plato en el carrito",
+      "Eliminar ese plato del array al hacer clic",
+      "Confirmar que el total se recalcula bien al quitar"
+    ]
+  },
+  {
+    title: "Guardar el carrito (localStorage)",
+    goal: "El carrito no se borra al recargar la página.",
+    explain: "localStorage guarda datos en el navegador aunque cierres la página. Solo guarda texto, así que se usa JSON.stringify para guardar y JSON.parse para volver a leer. Hoy haces que tu carrito sobreviva a la recarga.",
+    resources: [
+      { label: "MDN — localStorage", url: "https://developer.mozilla.org/es/docs/Web/API/Window/localStorage" }
+    ],
+    startPrompt: "Explícame qué es localStorage y cómo usar JSON.stringify y JSON.parse para guardar y recuperar un array, con un ejemplo. Guíame para que mi carrito se guarde en localStorage y no se borre al recargar la página.",
+    tasks: [
+      "Investigar qué es localStorage en 10 minutos",
+      "Guardar el carrito ahí cada vez que cambie",
+      "Recargar la página y confirmar que el carrito no se borra"
+    ]
+  },
+  {
+    title: "Pulir el proyecto",
+    goal: "El proyecto está limpio: el flujo completo funciona, los nombres son claros y no hay console.logs de prueba.",
+    explain: "Pulir es tan importante como programar. Hoy revisas el flujo completo (ver menú → agregar → ver total), renombras variables confusas para que se entiendan, y quitas los console.log que ya no sirven. Código limpio = más fácil de mantener y de entender mañana.",
+    resources: [
+      { label: "MDN — Qué hacer cuando algo falla", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/First_steps/What_went_wrong" }
+    ],
+    startPrompt: "Revisa conmigo mi proyecto: te voy a pegar mi código. Dime qué nombres de variables podrían ser más claros, qué console.log sobran, y si el flujo (ver menú → agregar → total) tiene algún error. Dame sugerencias concretas, pero deja que yo haga los cambios.",
+    tasks: [
+      "Revisar todo el flujo: ver menú → agregar → ver total",
+      "Corregir nombres de variables confusos",
+      "Quitar console.logs de prueba que ya no sirvan"
+    ]
+  },
+  {
+    title: "Confirmar pedido",
+    goal: "Hay un botón 'Confirmar pedido' que muestra un resumen y vacía el carrito.",
+    explain: "El cierre del proyecto: un botón que muestra un resumen final del pedido (platos + total) y luego vacía el carrito para empezar de nuevo. Aquí juntas todo lo aprendido: eventos, arrays, mostrar en pantalla y reiniciar el estado. ¡Felicidades por llegar hasta aquí!",
+    resources: [
+      { label: "MDN — Eventos (clics)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript/Building_blocks/Events" }
+    ],
+    startPrompt: "Guíame para crear un botón 'Confirmar pedido' que muestre un resumen final (lista de platos y total) en pantalla y luego vacíe el carrito. Explícame cómo limpiar un array y actualizar la pantalla. Deja que yo escriba el código.",
+    tasks: [
+      "Crear un botón 'Confirmar pedido'",
+      "Mostrar un resumen final del pedido en pantalla",
+      "Vaciar el carrito después de confirmar"
+    ]
+  },
+];
+
+/* ============== ESTADO Y PERSISTENCIA ============== */
+const STORAGE_KEY = "bitacora_restaurante_v1";
+const CODE_KEY = "bitacora_sync_code";
+
+let syncCode = localStorage.getItem(CODE_KEY) || null;
+let docRef = null;     // referencia al documento de Firestore
+let unsub = null;      // función para cancelar la escucha en tiempo real
+let pushTimer = null;  // temporizador para no escribir en la nube a cada tecla
+
+function defaultState(){
+  const t = new Date(); t.setDate(t.getDate() + 1); // empieza mañana
+  t.setHours(0,0,0,0);
+  return {
+    startDate: t.toISOString(),
+    points: 0,
+    streak: 0,
+    lastEvaluatedDate: null, // último día calendario ya evaluado para racha
+    days: {},                // { "0": { tasks:[bool,..], note:"", closed:true/false } }
+    updatedAt: 0             // marca de tiempo de la última edición (para reconciliar)
+  };
+}
+function normalize(s){
+  const d = defaultState();
+  return {
+    startDate: s.startDate || d.startDate,
+    points: Number(s.points) || 0,
+    streak: Number(s.streak) || 0,
+    lastEvaluatedDate: s.lastEvaluatedDate || null,
+    days: s.days || {},
+    updatedAt: Number(s.updatedAt) || 0
+  };
+}
+function loadLocal(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw){ try { return normalize(JSON.parse(raw)); } catch(e){ /* dato corrupto */ } }
+  return defaultState();
+}
+function saveLocal(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+/* Guardar = local al instante + nube con retardo (lo que el resto del código llama) */
+function saveState(){
+  state.updatedAt = Date.now();
+  saveLocal();
+  pushCloudDebounced();
+}
+
+let state = loadLocal();
+
+/* ---- fechas (se recalculan cuando cambia el estado) ---- */
+let start, today, todayIndex;
+let openIndex = 0;
+
+function dateOnly(d){ const x = new Date(d); x.setHours(0,0,0,0); return x; }
+function addDays(d, n){ const x = new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmtDate(d){
+  return d.toLocaleDateString('es-ES', { weekday:'short', day:'numeric', month:'short' });
+}
+function recomputeDates(){
+  start = dateOnly(state.startDate);
+  today = dateOnly(new Date());
+  todayIndex = Math.round((today - start) / 86400000);
+}
+function dayKey(i){ return String(i); }
+function getDay(i){
+  if (!state.days[dayKey(i)]){
+    state.days[dayKey(i)] = { tasks: PLAN[i].tasks.map(()=>false), note:"", code:"", evalText:"", verdict:"", closed:false };
+  }
+  return state.days[dayKey(i)];
+}
+
+/* ============== SINCRONIZACIÓN CON FIREBASE ============== */
+function sanitizeCode(code){
+  return String(code || "").replace(/\D/g, "").slice(0, 6); // solo dígitos, máximo 6
+}
+function setSyncStatus(text, kind){
+  const el = document.getElementById('syncStatus');
+  el.textContent = text;
+  el.className = 'syncStatus mono' + (kind ? ' ' + kind : '');
+}
+function buildSyncUI(){
+  const btn = document.getElementById('syncBtn');
+  btn.textContent = syncCode ? 'PIN configurado · cambiar' : 'Conectar a la nube';
+}
+
+function pushCloudDebounced(){
+  if (!docRef) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(pushCloud, 800);
+}
+async function pushCloud(){
+  if (!docRef) return;
+  try {
+    setSyncStatus('guardando…');
+    await setDoc(docRef, JSON.parse(JSON.stringify(state)));
+    setSyncStatus('sincronizado ✓', 'ok');
+  } catch(e){
+    console.error('Error al guardar en la nube:', e);
+    setSyncStatus('sin conexión — se guardará al volver', 'warn');
+  }
+}
+function subscribe(){
+  if (unsub){ unsub(); unsub = null; }
+  unsub = onSnapshot(docRef, (snap) => {
+    if (!snap.exists() || snap.metadata.hasPendingWrites) return; // ignora el eco de lo que acabamos de escribir
+    const cloud = normalize(snap.data());
+    if (cloud.updatedAt > (state.updatedAt || 0)){
+      state = cloud;
+      saveLocal();
+      recomputeDates();
+      render();
+      setSyncStatus('actualizado desde otro dispositivo ✓', 'ok');
+    }
+  }, (err) => {
+    console.error('Error de escucha en tiempo real:', err);
+    setSyncStatus('sin conexión — guardado local', 'warn');
+  });
+}
+
+async function connect(code){
+  const id = sanitizeCode(code);
+  if (id.length < 4){ showCodeError('El PIN debe tener entre 4 y 6 dígitos (mejor 6).'); return; }
+  syncCode = code.trim();
+  localStorage.setItem(CODE_KEY, syncCode);
+  docRef = doc(db, 'bitacoras', id);
+  closeCodeModal();
+  buildSyncUI();
+  setSyncStatus('conectando…');
+  try {
+    const snap = await getDoc(docRef);
+    if (snap.exists()){
+      const cloud = normalize(snap.data());
+      // gana la versión más reciente: así, en un dispositivo nuevo, baja tu avence de la nube
+      if (cloud.updatedAt >= (state.updatedAt || 0)){
+        state = cloud;
+        saveLocal();
+      }
+    }
+    startupLogic();      // evalúa racha sobre el estado correcto
+    await pushCloud();   // crea/actualiza el documento en la nube
+    subscribe();         // escucha cambios de otros dispositivos
+  } catch(e){
+    console.error('Error al conectar con la nube:', e);
+    startupLogic();
+    setSyncStatus('sin conexión — guardado local', 'warn');
+  }
+}
+
+/* ============== EVALUAR RACHA (penaliza días no cerrados) ============== */
+function evaluateStreak(){
+  let lastEval = state.lastEvaluatedDate ? dateOnly(state.lastEvaluatedDate) : null;
+  if (lastEval === null){
+    state.lastEvaluatedDate = addDays(today, -1).toISOString();
+    lastEval = dateOnly(state.lastEvaluatedDate);
+  }
+  let cursor = addDays(lastEval, 1);
+  let missed = 0;
+  let messages = [];
+
+  while (cursor < today){
+    const idx = Math.round((cursor - start) / 86400000);
+    if (idx >= 0 && idx < PLAN.length){
+      const d = getDay(idx);
+      if (!d.closed){
+        missed++;
+      }
+    }
+    cursor = addDays(cursor, 1);
+  }
+
+  if (missed > 0){
+    state.streak = 0;
+    const penalty = missed * 15;
+    state.points = Math.max(0, state.points - penalty);
+    messages.push(`Se apagó tu racha 🔥➡️🖤. No cerraste ${missed} día(s) anterior(es). Perdiste ${penalty} puntos.`);
+  }
+
+  state.lastEvaluatedDate = addDays(today, -1).toISOString();
+  saveState();
+  return messages;
+}
+
+/* ============== AYUDANTES (UI / evaluación) ============== */
+function escapeHtml(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+async function copyText(text, btn){
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; }
+  catch(_){
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      ok = document.execCommand('copy'); ta.remove();
+    } catch(__){ ok = false; }
+  }
+  if (btn){
+    if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+    btn.textContent = ok ? '¡Copiado! ✓' : 'Copia manual (Ctrl+C)';
+    setTimeout(() => { btn.textContent = btn.dataset.label; }, 1600);
+  }
+}
+
+/* Arma el prompt que el usuario pega en su IA para evaluar el día */
+function buildEvalPrompt(i){
+  const p = PLAN[i];
+  const d = getDay(i);
+  const lines = [
+    `Eres mi tutor de programación y estás evaluando mi avance del DÍA ${i+1} de un plan para aprender a programar haciendo el menú de un restaurante.`,
+    ``,
+    `OBJETIVO DEL DÍA: ${p.goal}`,
+    ``,
+    `LO QUE DEBÍA LOGRAR HOY:`,
+    ...p.tasks.map(t => `- ${t}`),
+    ``,
+    `ESTE ES MI CÓDIGO DE HOY:`,
+    '```',
+    (d.code && d.code.trim() ? d.code : '(no pegué código)'),
+    '```',
+    ``,
+    `Evalúa si mi código cumple el objetivo del día. Responde en español, claro y para principiante, con:`,
+    `1) Qué está bien.`,
+    `2) Qué falta o está mal, con ejemplos concretos y sencillos.`,
+    `3) Un consejo para mejorar.`,
+    ``,
+    `MUY IMPORTANTE: termina tu respuesta con UNA sola línea, usando exactamente uno de estos formatos:`,
+    `VEREDICTO: APROBADO   (si cumplo lo esencial del día)`,
+    `VEREDICTO: REVISAR    (si todavía me falta)`
+  ];
+  return lines.join('\n');
+}
+
+/* Detecta el veredicto dentro de la respuesta que la IA dio */
+function detectVerdict(text){
+  const t = String(text || '').toUpperCase();
+  if (t.includes('VEREDICTO: APROBADO') || t.includes('VEREDICTO:APROBADO')) return 'APROBADO';
+  if (t.includes('VEREDICTO: REVISAR') || t.includes('VEREDICTO:REVISAR')) return 'REVISAR';
+  if (/\bNO\s+APROBADO\b/.test(t) || /\bNO\s+APRUEB/.test(t)) return 'REVISAR';
+  if (/\bAPROBADO\b/.test(t)) return 'APROBADO';
+  if (/\bREVISAR\b/.test(t)) return 'REVISAR';
+  return '';
+}
+function verdictLabel(v){ return v === 'APROBADO' ? '✅ Aprobado' : v === 'REVISAR' ? '⚠️ Revisar' : 'sin evaluar'; }
+function verdictClass(v){ return v === 'APROBADO' ? 'ok' : v === 'REVISAR' ? 'warn' : ''; }
+
+/* Habilita/inhabilita el botón "Cerrar día" según el estado */
+function refreshCloseBtn(i){
+  const btn = document.querySelector(`[data-close="${i}"]`);
+  if (!btn) return;
+  const d = getDay(i);
+  btn.disabled = d.closed || i !== todayIndex || !(d.code && d.code.trim()) || !d.verdict;
+}
+
+/* ============== CERRAR UN DÍA ============== */
+function closeDay(i){
+  const d = getDay(i);
+  if (d.closed) return;
+  if (i !== todayIndex){ showAlert('Solo puedes cerrar el día de HOY.'); return; }
+  if (!d.code || !d.code.trim()){ showAlert('Pega tu código de hoy antes de cerrar (paso 1).'); return; }
+  if (!d.verdict){ showAlert('Genera el prompt, pide la evaluación a la IA y registra el veredicto antes de cerrar.'); return; }
+
+  d.closed = true;
+  const done = d.tasks.filter(Boolean).length;
+  const total = PLAN[i].tasks.length;
+
+  if (d.verdict === 'APROBADO'){
+    state.streak += 1;
+    const bonus = 15 + (done === total ? 5 : 0) + (state.streak % 7 === 0 ? 20 : 0);
+    state.points += bonus;
+    showAlert(`Día ${i+1} APROBADO por la IA ✅ +${bonus} puntos. Racha: ${state.streak} 🔥`);
+  } else {
+    state.streak = 0;
+    state.points = Math.max(0, state.points - 5);
+    showAlert(`Día ${i+1} cerrado, pero la IA sugiere REVISAR ⚠️. Racha reiniciada, -5 puntos. Repasa el consejo y vuelve mañana con más fuerza.`);
+  }
+  saveState();
+  render();
+}
+
+function showAlert(msg){
+  const el = document.getElementById('alertBanner');
+  el.innerHTML = msg;
+  el.style.display = 'block';
+}
+
+/* ============== RENDER ============== */
+function render(){
+  document.getElementById('streakValue').innerHTML = `${state.streak} <span style="font-size:14px;">🔥</span>`;
+  document.getElementById('streakValue').className = 'value' + (state.streak === 0 ? ' off' : '');
+  document.getElementById('pointsValue').textContent = state.points;
+  document.getElementById('currentDayValue').textContent =
+    todayIndex >= 0 && todayIndex < PLAN.length ? `Día ${todayIndex+1}` : (todayIndex < 0 ? '— aún no inicia —' : '¡plan terminado!');
+
+  const closedCount = PLAN.filter((_, i) => state.days[dayKey(i)] && state.days[dayKey(i)].closed).length;
+  document.getElementById('progressFill').style.width = `${Math.round(closedCount/PLAN.length*100)}%`;
+  document.getElementById('progressLabel').textContent = `${closedCount} / ${PLAN.length} días cumplidos`;
+
+  const container = document.getElementById('ticketsContainer');
+  container.innerHTML = '';
+
+  PLAN.forEach((dayPlan, i) => {
+    const d = getDay(i);
+    const dDate = addDays(start, i);
+    const isToday = i === todayIndex;
+    const isLocked = i > todayIndex;
+    const isPast = i < todayIndex;
+    const closeDisabled = d.closed || !isToday || !(d.code && d.code.trim()) || !d.verdict;
+
+    const ticket = document.createElement('div');
+    ticket.className = 'ticket' + (isToday ? ' today' : '') + (isLocked ? ' locked' : '') + (d.closed ? ' done' : '') + (openIndex === i ? ' open' : '');
+
+    let badge = '';
+    if (isLocked) badge = `<span class="badge bloqueado">Bloqueado</span>`;
+    else if (d.closed) badge = `<span class="badge cumplido">Cumplido</span>`;
+    else if (isToday) badge = `<span class="badge hoy">Hoy</span>`;
+    else if (isPast) badge = `<span class="badge pendiente">Sin cerrar</span>`;
+
+    ticket.innerHTML = `
+      <div class="ticketHead" data-idx="${i}">
+        <div class="dayMeta">
+          <span class="dayNum mono">Día ${i+1} de ${PLAN.length}</span>
+          <span class="dayTitle">${escapeHtml(dayPlan.title)}</span>
+          <span class="dayDate mono">${fmtDate(dDate)}</span>
+        </div>
+        ${badge}
+      </div>
+      <div class="ticketBody">
+        ${isLocked ? `<p class="lockNote">Este día se desbloquea el ${fmtDate(dDate)}. Una cosa a la vez.</p>` : `
+        <div class="dayGoal"><b>🎯 Objetivo:</b> ${escapeHtml(dayPlan.goal)}</div>
+
+        <details class="learnBox" ${isToday ? 'open' : ''}>
+          <summary>📘 Qué aprenderás hoy</summary>
+          <p>${escapeHtml(dayPlan.explain)}</p>
+          <div class="resList">
+            ${dayPlan.resources.map(r => `<a href="${r.url}" target="_blank" rel="noopener">🔗 ${escapeHtml(r.label)}</a>`).join('')}
+          </div>
+        </details>
+
+        <div class="promptBox">
+          <div class="promptHead">💬 Cómo empezar — copia esto y pégalo en tu IA (Claude / ChatGPT)</div>
+          <pre class="promptText">${escapeHtml(dayPlan.startPrompt)}</pre>
+          <div class="promptFoot">
+            <button class="copyBtn" data-copystart="${i}">📋 Copiar prompt</button>
+          </div>
+        </div>
+
+        <div class="sectionLabel">✅ Pasos de hoy</div>
+        <ul class="taskList">
+          ${dayPlan.tasks.map((t, ti) => `
+            <li class="taskItem ${d.tasks[ti] ? 'checked' : ''}">
+              <input type="checkbox" data-day="${i}" data-task="${ti}" ${d.tasks[ti] ? 'checked' : ''} ${d.closed ? 'disabled' : ''}>
+              <label>${escapeHtml(t)}</label>
+            </li>
+          `).join('')}
+        </ul>
+
+        <div class="noteWrap">
+          <label class="mono">Notas del día</label>
+          <textarea data-note="${i}" placeholder="¿Qué entendiste hoy? ¿Dónde te trabaste?" ${d.closed ? 'disabled' : ''}>${escapeHtml(d.note)}</textarea>
+        </div>
+
+        <div class="closeBox">
+          <div class="sectionLabel">🚀 Cerrar el día (con evaluación de la IA)</div>
+          <p class="closeHint">Para cerrar el día necesitas pegar tu código y que la IA lo evalúe. Tu código y la nota se guardan en la nube.</p>
+
+          <label class="stepLabel">1) Pega aquí tu código de hoy</label>
+          <textarea class="codeArea" data-code="${i}" placeholder="Pega el HTML / CSS / JS que escribiste hoy…" ${d.closed ? 'disabled' : ''}>${escapeHtml(d.code || '')}</textarea>
+
+          <div class="ticketActions">
+            <button data-genprompt="${i}" ${d.closed ? 'disabled' : ''}>2) Generar prompt de evaluación</button>
+          </div>
+          <pre class="evalPromptOut" data-evalout="${i}" hidden></pre>
+          <div class="ticketActions" data-evalactions="${i}" hidden>
+            <button class="copyBtn" data-copyeval="${i}">📋 Copiar prompt de evaluación</button>
+          </div>
+
+          <label class="stepLabel">3) Pega aquí la respuesta de la IA</label>
+          <textarea class="evalArea" data-eval="${i}" placeholder="Pega lo que respondió la IA. Debe terminar en: VEREDICTO: APROBADO  o  VEREDICTO: REVISAR" ${d.closed ? 'disabled' : ''}>${escapeHtml(d.evalText || '')}</textarea>
+          <div class="ticketActions">
+            <button data-registerverdict="${i}" ${d.closed ? 'disabled' : ''}>4) Registrar veredicto</button>
+            <span class="verdictBadge ${verdictClass(d.verdict)}" data-verdict="${i}">${verdictLabel(d.verdict)}</span>
+          </div>
+
+          <div class="ticketActions">
+            <button class="primary" data-close="${i}" ${closeDisabled ? 'disabled' : ''}>
+              ${d.closed ? 'Día cerrado ✓' : 'Cerrar día'}
+            </button>
+          </div>
+          ${!isToday && !d.closed && isPast ? `<p class="lockNote">Este día ya pasó sin cerrarse. Solo se puede cerrar el día de hoy.</p>` : ''}
+        </div>
+        `}
+      </div>
+    `;
+    container.appendChild(ticket);
+  });
+
+  // abrir / cerrar el detalle de cada día
+  container.querySelectorAll('.ticketHead').forEach(h => {
+    h.addEventListener('click', () => {
+      const idx = Number(h.dataset.idx);
+      openIndex = openIndex === idx ? -1 : idx;
+      render();
+    });
+  });
+  // marcar tareas
+  container.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const day = Number(e.target.dataset.day);
+      const task = Number(e.target.dataset.task);
+      getDay(day).tasks[task] = e.target.checked;
+      openIndex = day;
+      saveState();
+      render();
+    });
+  });
+  // notas del día
+  container.querySelectorAll('textarea[data-note]').forEach(ta => {
+    ta.addEventListener('input', (e) => {
+      getDay(Number(e.target.dataset.note)).note = e.target.value;
+      saveState();
+    });
+  });
+  // código pegado
+  container.querySelectorAll('textarea[data-code]').forEach(ta => {
+    ta.addEventListener('input', (e) => {
+      const day = Number(e.target.dataset.code);
+      getDay(day).code = e.target.value;
+      saveState();
+      refreshCloseBtn(day);
+    });
+  });
+  // respuesta de la IA
+  container.querySelectorAll('textarea[data-eval]').forEach(ta => {
+    ta.addEventListener('input', (e) => {
+      getDay(Number(e.target.dataset.eval)).evalText = e.target.value;
+      saveState();
+    });
+  });
+  // copiar prompt de inicio
+  container.querySelectorAll('[data-copystart]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      copyText(PLAN[Number(e.currentTarget.dataset.copystart)].startPrompt, e.currentTarget);
+    });
+  });
+  // generar prompt de evaluación
+  container.querySelectorAll('[data-genprompt]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const day = Number(e.currentTarget.dataset.genprompt);
+      const d = getDay(day);
+      if (!d.code || !d.code.trim()){ showAlert('Primero pega tu código de hoy (paso 1).'); return; }
+      const out = container.querySelector(`[data-evalout="${day}"]`);
+      const acts = container.querySelector(`[data-evalactions="${day}"]`);
+      out.textContent = buildEvalPrompt(day);
+      out.hidden = false;
+      acts.hidden = false;
+    });
+  });
+  // copiar prompt de evaluación
+  container.querySelectorAll('[data-copyeval]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      copyText(buildEvalPrompt(Number(e.currentTarget.dataset.copyeval)), e.currentTarget);
+    });
+  });
+  // registrar veredicto a partir de la respuesta de la IA
+  container.querySelectorAll('[data-registerverdict]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const day = Number(e.currentTarget.dataset.registerverdict);
+      const d = getDay(day);
+      const v = detectVerdict(d.evalText);
+      if (!v){
+        showAlert('No detecté el veredicto. Pega la respuesta completa de la IA, que debe incluir una línea "VEREDICTO: APROBADO" o "VEREDICTO: REVISAR".');
+        return;
+      }
+      d.verdict = v;
+      saveState();
+      const badge = container.querySelector(`[data-verdict="${day}"]`);
+      badge.textContent = verdictLabel(v);
+      badge.className = 'verdictBadge ' + verdictClass(v);
+      refreshCloseBtn(day);
+      showAlert(v === 'APROBADO'
+        ? 'Veredicto registrado: ✅ Aprobado. Ya puedes cerrar el día.'
+        : 'Veredicto registrado: ⚠️ Revisar. Puedes cerrar el día, pero repasa lo que falta.');
+    });
+  });
+  // cerrar día
+  container.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      closeDay(Number(e.currentTarget.dataset.close));
+    });
+  });
+}
+
+/* ============== LÓGICA DE ARRANQUE ============== */
+function startupLogic(){
+  recomputeDates();
+  const streakMessages = evaluateStreak();
+  if (streakMessages.length) showAlert(streakMessages.join(' '));
+  render();
+}
+
+/* ============== MODAL DE CÓDIGO ============== */
+function openCodeModal(){
+  document.getElementById('codeInput').value = syncCode || '';
+  hideCodeError();
+  document.getElementById('codeModal').hidden = false;
+  document.getElementById('codeInput').focus();
+}
+function closeCodeModal(){ document.getElementById('codeModal').hidden = true; }
+function showCodeError(msg){
+  const e = document.getElementById('codeError');
+  e.textContent = msg; e.hidden = false;
+}
+function hideCodeError(){ document.getElementById('codeError').hidden = true; }
+
+/* ============== INIT ============== */
+recomputeDates();
+openIndex = (todayIndex >= 0 && todayIndex < PLAN.length) ? todayIndex : 0;
+render();        // vista previa inmediata (funciona offline), todavía sin tocar la nube
+buildSyncUI();
+
+document.getElementById('syncBtn').addEventListener('click', openCodeModal);
+document.getElementById('codeConnect').addEventListener('click', () => {
+  connect(document.getElementById('codeInput').value);
+});
+document.getElementById('codeInput').addEventListener('input', (e) => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6); // solo dígitos
+});
+document.getElementById('codeInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') connect(document.getElementById('codeInput').value);
+});
+document.getElementById('codeSkip').addEventListener('click', () => {
+  closeCodeModal();
+  startupLogic();   // modo solo-local (sin nube)
+});
+
+if (syncCode){
+  connect(syncCode);      // ya hay código guardado: reconecta y sincroniza
+} else {
+  openCodeModal();        // primera vez: pide un código
+}
+
+/* ============== PWA: registro del service worker ============== */
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(console.error);
+  });
+}
+
+/* ============== Botón de instalación ============== */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').style.display = 'flex';
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBtn').style.display = 'none';
+});
+</script>
+</body>
+</html>
