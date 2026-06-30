@@ -4,10 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bitácora — Construcción de Triple 7</title>
-<meta name="theme-color" content="#C1432F">
+<meta name="theme-color" content="#0A1726">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Triple 7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -127,16 +131,29 @@
     position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
     border:1px solid var(--line); border-radius:var(--radius);
     margin-bottom:16px; box-shadow:var(--shadow); overflow:hidden;
-    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    transition:transform .22s cubic-bezier(.2,.7,.3,1), box-shadow .22s ease, border-color .22s ease;
   }
-  .ticket::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--muted); opacity:.65;}
+  .ticket::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background:var(--muted); opacity:.6; transition:width .22s ease, opacity .22s ease;
+  }
   .ticket.blk-fund::before{background:var(--blue);}
   .ticket.blk-tools::before{background:var(--gold);}
   .ticket.blk-phase::before{background:var(--good);}
-  .ticket:hover{transform:translateY(-2px);}
+  .ticket:hover{
+    transform:translateY(-4px);
+    border-color:var(--gold-line);
+    box-shadow:0 22px 44px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(231,184,92,.16);
+  }
+  .ticket:hover::before{width:7px; opacity:1;}
   .ticket.locked{opacity:.5;}
-  .ticket.locked:hover{transform:none;}
+  .ticket.locked:hover{transform:none; border-color:var(--line); box-shadow:var(--shadow);}
+  .ticket.locked:hover::before{width:4px; opacity:.6;}
   .ticket.today{border-color:var(--gold-line); box-shadow:0 0 0 1px var(--gold-line), 0 0 26px -6px rgba(231,184,92,.45), var(--shadow);}
+  .ticket.today:hover{
+    transform:translateY(-4px);
+    box-shadow:0 0 0 1px var(--gold-line), 0 0 40px -6px rgba(231,184,92,.6), 0 22px 44px -20px rgba(0,0,0,.9);
+  }
   .ticket.done .ticketHead{background:var(--good-soft);}
 
   .ticketHead{
@@ -298,8 +315,29 @@
   .confetti{position:fixed; top:-24px; z-index:59; pointer-events:none; font-size:16px; animation:fall linear forwards;}
   @keyframes fall{to{transform:translateY(112vh) rotate(420deg); opacity:.15;}}
 
+  /* ---------- CENTRADO Y HOVER EXTRA ---------- */
+  .headInner{max-width:1100px; margin:0 auto;}
+  .stat{transition:transform .2s ease, border-color .2s ease;}
+  .stat:hover{transform:translateY(-2px); border-color:var(--gold-line);}
+
+  /* ---------- ESCRITORIO: tablero de 2 columnas ---------- */
+  @media (min-width:760px){
+    header{padding:18px 28px 16px;}
+    header h1{font-size:23px;}
+    .roundel{width:56px; height:56px; font-size:19px;}
+    .stats, .flightWrap, #alertBanner{max-width:1100px; margin-left:auto; margin-right:auto;}
+    .flightTrack{margin:24px 16px 14px;}
+    main{
+      max-width:1100px; padding:14px 24px 60px;
+      display:grid; grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:18px; align-items:start;
+    }
+    .ticket{margin-bottom:0;}
+    .ticket.open{grid-column:1 / -1;}
+  }
+
   @media (prefers-reduced-motion: reduce){
-    .flightTrail, .flightPlane, .ticket, .ticketHead, button{transition:none;}
+    .flightTrail, .flightPlane, .ticket, .ticketHead, .ticket::before, .stat, button{transition:none;}
     .ticket.open .ticketBody, .modalCard, .celebrate .msg, .confetti{animation:none;}
   }
 </style>
@@ -307,16 +345,18 @@
 <body>
 
 <header>
-  <div class="brandRow">
-    <div class="roundel">777</div>
-    <div>
-      <div class="eyebrow mono">Triple 7 · Plan de vuelo ✈</div>
-      <h1>Bitácora de construcción</h1>
+  <div class="headInner">
+    <div class="brandRow">
+      <div class="roundel">777</div>
+      <div>
+        <div class="eyebrow mono">Triple 7 · Plan de vuelo ✈</div>
+        <h1>Bitácora de construcción</h1>
+      </div>
     </div>
-  </div>
-  <div class="syncRow">
-    <span id="syncStatus" class="syncStatus mono">Sin conectar a la nube</span>
-    <button id="syncBtn" class="syncBtn mono">Conectar a la nube</button>
+    <div class="syncRow">
+      <span id="syncStatus" class="syncStatus mono">Sin conectar a la nube</span>
+      <button id="syncBtn" class="syncBtn mono">Conectar a la nube</button>
+    </div>
   </div>
 </header>
 

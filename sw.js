@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bitacora-v2';
+const CACHE_NAME = 'bitacora-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -34,15 +34,17 @@ self.addEventListener('fetch', (event) => {
 
   const isHTML = req.mode === 'navigate' ||
     (req.headers.get('accept') || '').includes('text/html');
+  // El manifest también va red-primero para que cambios de íconos/colores se vean enseguida.
+  const netFirst = isHTML || url.pathname.endsWith('.webmanifest');
 
-  // HTML: red primero (para ver siempre la última versión), con respaldo en caché offline.
-  if (isHTML) {
+  // Red primero (para ver siempre la última versión), con respaldo en caché offline.
+  if (netFirst) {
     event.respondWith(
       fetch(req).then((response) => {
         const copy = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
         return response;
-      }).catch(() => caches.match(req).then((cached) => cached || caches.match('./index.html')))
+      }).catch(() => caches.match(req).then((cached) => cached || (isHTML ? caches.match('./index.html') : cached)))
     );
     return;
   }
